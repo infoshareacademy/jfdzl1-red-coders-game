@@ -5,6 +5,7 @@
 
   var sprites = [];
   var assetsToLoad = [];
+  var missiles = [];
 
 
 
@@ -40,9 +41,12 @@
 
   var RIGHT = 39;
   var LEFT = 37;
+  var SPACE = 32;
 
   var moveRight = false;
   var moveLeft = false;
+  var shoot = false;
+  var spaceKeyIdDown = false;
 
 
   window.addEventListener("keydown", function(event) {
@@ -53,6 +57,13 @@
       case RIGHT:
         moveRight = true;
         break;
+      case SPACE:
+        if (!spaceKeyIdDown) {
+        shoot = true;
+        spaceKeyIdDown = true;
+      }
+
+
     }
   }, false);
 
@@ -64,6 +75,9 @@
         break;
       case RIGHT:
         moveRight = false;
+        break;
+      case  SPACE:
+        spaceKeyIdDown = false;
     }
   }, false);
 
@@ -108,9 +122,22 @@
     if (!moveRight && !moveLeft) {
       hero.vx = 0;
     }
+    if (shoot) {
+      fireMissile();
+      shoot = false;
+    }
 
     hero.x = Math.max(0, Math.min(hero.x + hero.vx, canvas.width - hero.width));
 
+    for (var i = 0; i < missiles.length; i++) {
+      var missile = missiles[i];
+      missile.y += missile.vy;
+      if (missile.y < 0 - missile.height) {
+        removeObject(missile, missiles);
+        removeObject(missile, sprites);
+        i--;
+      }
+    }
 
   }
 
@@ -135,4 +162,34 @@
 
     }
   }
+
+  function fireMissile() {
+
+    if (missiles.length >= 3) {
+      return;
+    }
+    var missile = Object.create(spriteObject);
+    missile.sourceX = 128;
+    missile.sourceY = 0;
+    missile.sourceWidth = 32;
+    missile.sourceHeight = 32;
+    missile.width = 32;
+    missile.height = 32;
+
+    missile.x = hero.centerX() -  missile.halfWidth();
+    missile.y = canvas.height - (hero.height + missile.height);
+    missile.vy = -8;
+    sprites.push(missile);
+    missiles.push(missile);
+
+  }
+
+  function removeObject(objectToRemowe, array){
+    var i = array.indexOf(objectToRemowe);
+    if (i !== -1) {
+      array.splice(i);
+    }
+
+  }
+
 }());
