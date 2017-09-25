@@ -6,6 +6,7 @@
   var sprites = [];
   var assetsToLoad = [];
   var missiles = [];
+  var enemies = [];
 
 
 
@@ -31,6 +32,9 @@
   assetsToLoad.push(image);
 
   var assetsLoaded = 0;
+  var enemyFrequency = 120;
+  var enemyTimer = 0;
+
 
   var LOADING = 0;
   var PLAYING = 1;
@@ -139,6 +143,27 @@
       }
     }
 
+    enemyTimer++;
+
+    if (enemyTimer === enemyFrequency) {
+      makeEnemy();
+      enemyTimer = 0;
+    }
+
+    for (var i = 0; i < enemies.length; i++) {
+      var enemy = enemies[i];
+
+      if (enemy.state = enemy.NORMAL) {
+        enemy.y += enemy.vy;
+
+      }
+
+      if(enemy.y > canvas.height + enemy.height) {
+        removeObject(enemy, enemies);
+        removeObject(enemy, sprites);
+      }
+    }
+
   }
 
 
@@ -190,6 +215,19 @@
       array.splice(i);
     }
 
+  }
+
+  function makeEnemy() {
+    var enemy = Object.create(enemyObject);
+    enemy.sourceX = 64;
+    enemy.y = 0 - enemy.height;
+
+     var randomPosition = Math.floor(Math.random() * canvas.width / enemy.width);
+     enemy.x = randomPosition * enemy.width;
+     enemy.vy = 1;
+
+     sprites.push(enemy);
+     enemies.push(enemy);
   }
 
 }());
