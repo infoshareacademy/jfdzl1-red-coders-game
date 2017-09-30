@@ -134,9 +134,10 @@
 
         for (var i = 0; i < missiles.length; i++) {
             var missile = missiles[i];
-            missile.y += missile.vy;
 
             var scale = missile.y / canvas.height;
+
+            missile.y += missile.vy * scale;
             missile.width = missile.sourceWidth * scale;
             missile.height = missile.sourceHeight * scale;
             missile.x = -1 * (missile.vectorB() - missile.y) / missile.vectorA();
@@ -160,10 +161,14 @@
             var enemy = enemies[i];
 
             if (enemy.state = enemy.NORMAL) {
-                enemy.y += enemy.vy;
-                enemy.x = -1 * (enemy.vectorB() - enemy.y) / enemy.vectorA();
+
 
                 var scale = enemy.y / canvas.height;
+
+                enemy.y += enemy.vy * scale;
+                enemy.x = -1 * (enemy.vectorB() - enemy.y) / enemy.vectorA();
+
+
                 enemy.width = enemy.sourceWidth * scale;
                 enemy.height = enemy.sourceHeight * scale;
 
@@ -172,6 +177,19 @@
             if (enemy.y > canvas.height + enemy.height) {
                 removeObject(enemy, enemies);
                 removeObject(enemy, sprites);
+            }
+        }
+
+        for (var i = 0; i < enemies.length ; i++) {
+            var enemy = enemies[i];
+            for (var j = 0; j < missiles.length; j++) {
+                var missile = missiles[j];
+                if (hitTestRectangle(missile, enemy) && enemy.state === enemy.NORMAL){
+                    destroyEnemy(enemy);
+                    removeObject(missile, missiles);
+                    removeObject(missile, sprites);
+                    j--;
+                }
             }
         }
 
@@ -205,7 +223,7 @@
             // return;
         }
         var missile = Object.create(spriteObject);
-        missile.sourceX = 128;
+        missile.sourceX = 194;
         missile.sourceY = 0;
         missile.sourceWidth = 32;
         missile.sourceHeight = 32;
@@ -249,5 +267,20 @@
         enemies.push(enemy);
     }
 
+
+    function destroyEnemy(enemy){
+        enemy.state = enemy.DEAD;
+        enemy.vy = 0;
+        enemy.update();
+
+
+        setTimeout(removeEnemy, 2000);
+
+        function removeEnemy() {
+            removeObject(enemy, enemies);
+            removeObject(enemy, sprites);
+
+        }
+    }
 
 }());

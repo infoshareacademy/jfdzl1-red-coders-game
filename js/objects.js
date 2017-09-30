@@ -48,7 +48,7 @@ enemyObject.DEAD = 2;
 enemyObject.state = enemyObject.NORMAL;
 enemyObject.update = function()
 {
-    this.sourceX = this.state * this.width;
+    this.sourceX = this.state * this.sourceWidth ;
 };
 
 
