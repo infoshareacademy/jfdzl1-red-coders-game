@@ -10,6 +10,10 @@ var spriteObject =
         y: 0,
         vx: 0,
         vy: 0,
+        startPointX: 0,
+        startPointY: 100,
+        endPointX: 0,
+        endPointY: 0,
         visible: true,
 
         //Getters
@@ -28,6 +32,12 @@ var spriteObject =
         halfHeight: function()
         {
             return this.height / 2;
+        },
+        vectorA: function () {
+            return (this.endPointY - this.startPointY) / (this.startPointX - this.endPointX) * -1;
+        },
+        vectorB: function () {
+         return  this.endPointY - (this.vectorA() * this.endPointX);
         }
     };
 
