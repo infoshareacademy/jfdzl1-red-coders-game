@@ -1,4 +1,4 @@
-(function(){
+(function () {
   'use strict';
   var canvas = document.querySelector("canvas");
   var drawingSurface = canvas.getContext("2d");
@@ -7,7 +7,7 @@
   var assetsToLoad = [];
   var missiles = [];
   var enemies = [];
-
+  var globalScale = 2;
 
 
   var background = Object.create(spriteObject);
@@ -22,7 +22,7 @@
 
   var hero = Object.create(spriteObject);
   hero.x = canvas.width / 2 - hero.width / 2;
-  hero.y =canvas.height - hero.height;
+  hero.y = canvas.height - hero.height;
   sprites.push(hero);
 
 
@@ -53,7 +53,7 @@
   var spaceKeyIdDown = false;
 
 
-  window.addEventListener("keydown", function(event) {
+  window.addEventListener("keydown", function (event) {
     switch (event.keyCode) {
       case  LEFT:
         moveLeft = true;
@@ -63,17 +63,17 @@
         break;
       case SPACE:
         if (!spaceKeyIdDown) {
-        shoot = true;
-        spaceKeyIdDown = true;
-      }
+          shoot = true;
+          spaceKeyIdDown = true;
+        }
 
 
     }
   }, false);
 
 
-  window.addEventListener("keyup", function(event){
-    switch(event.keyCode){
+  window.addEventListener("keyup", function (event) {
+    switch (event.keyCode) {
       case LEFT:
         moveLeft = false;
         break;
@@ -92,7 +92,7 @@
   function update() {
     requestAnimationFrame(update, canvas);
 
-    switch(gameState){
+    switch (gameState) {
       case LOADING:
         console.log("Loading...");
         break;
@@ -108,7 +108,7 @@
 
   function loadHandler() {
     assetsLoaded++;
-    if(assetsLoaded === assetsToLoad.length) {
+    if (assetsLoaded === assetsToLoad.length) {
       image.removeEventListener("load", loadHandler, false);
       gameState = PLAYING;
 
@@ -136,9 +136,15 @@
     for (var i = 0; i < missiles.length; i++) {
       var missile = missiles[i];
       missile.y += missile.vy;
+
+      if (missile.x < (canvas.width / 2)) {
+        missile.x += 2;
+      } else if (missile.x > (canvas.width / 2)) {
+        missile.x -= 2;
+      }
       if (missile.y < 0 - missile.height) {
         removeObject(missile, missiles);
-        removeObject(missile, sprites);
+        //removeObject(missile, sprites);
         i--;
       }
     }
@@ -156,11 +162,24 @@
       if (enemy.state = enemy.NORMAL) {
         enemy.y += enemy.vy;
 
+
+        if (enemy.y % 4 === 0) {
+          if (enemy.x > (canvas.width / 2)) {
+            enemy.x += 2 ;
+          } else if (enemy.x < (canvas.width / 2)) {
+            enemy.x -= 2;
+          }
+        }
+        var scale = (enemy.y / canvas.width) * globalScale + 0.2;
+        enemy.width = Math.floor(enemy.sourceWidth * scale);
+        enemy.height = Math.floor(enemy.sourceHeight * scale);
+        enemy.vy = scale * 2;
       }
 
-      if(enemy.y > canvas.height + enemy.height) {
-        removeObject(enemy, enemies);
-        removeObject(enemy, sprites);
+      if (enemy.y > canvas.height + enemy.height) {
+        //removeObject(enemy, enemies);
+        // removeObject(enemy, sprites);
+        enemies.slice(0);
       }
     }
 
@@ -173,7 +192,7 @@
 
   function render() {
     drawingSurface.clearRect(0, 0, canvas.width, canvas.height);
-    if (sprites.length !== 0){
+    if (sprites.length !== 0) {
       for (var i = 0; i < sprites.length; i++) {
         var sprite = sprites[i];
         drawingSurface.drawImage(
@@ -191,7 +210,7 @@
   function fireMissile() {
 
     if (missiles.length >= 3) {
-      return;
+      //return;
     }
     var missile = Object.create(spriteObject);
     missile.sourceX = 128;
@@ -201,7 +220,7 @@
     missile.width = 32;
     missile.height = 32;
 
-    missile.x = hero.centerX() -  missile.halfWidth();
+    missile.x = hero.centerX() - missile.halfWidth();
     missile.y = canvas.height - (hero.height + missile.height);
     missile.vy = -8;
     sprites.push(missile);
@@ -209,7 +228,7 @@
 
   }
 
-  function removeObject(objectToRemowe, array){
+  function removeObject(objectToRemowe, array) {
     var i = array.indexOf(objectToRemowe);
     if (i !== -1) {
       array.splice(i);
@@ -220,14 +239,21 @@
   function makeEnemy() {
     var enemy = Object.create(enemyObject);
     enemy.sourceX = 64;
-    enemy.y = 0 - enemy.height;
+    enemy.y = Math.floor(0.2 * canvas.height);
 
-     var randomPosition = Math.floor(Math.random() * canvas.width / enemy.width);
-     enemy.x = randomPosition * enemy.width;
-     enemy.vy = 1;
+    var randomPosition = Math.floor(Math.random() * canvas.width / enemy.width);
+    enemy.x = Math.floor(randomPosition * (enemy.width * 0.2 ) + canvas.width * 0.4);
+   // enemy.x = Math.floor(( canvas.width / enemy.width) * (enemy.width * 0.2 ) + canvas.width * 0.35);
+    enemy.vy = 1;
 
-     sprites.push(enemy);
-     enemies.push(enemy);
+    var scale = (enemy.y / canvas.width) * globalScale + 0.1;
+
+    enemy.vy = scale * 2;
+    enemy.width = Math.floor(enemy.sourceWidth * scale);
+    enemy.height = Math.floor(enemy.sourceHeight * scale);
+
+    sprites.push(enemy);
+    enemies.push(enemy);
   }
 
 }());
