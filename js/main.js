@@ -65,8 +65,6 @@
                     shoot = true;
                     spaceKeyIdDown = true;
                 }
-
-
         }
     }, false);
 
@@ -110,9 +108,7 @@
         if (assetsLoaded === assetsToLoad.length) {
             image.removeEventListener("load", loadHandler, false);
             gameState = PLAYING;
-
         }
-
     }
 
     function playGame() {
@@ -160,18 +156,13 @@
         for (var i = 0; i < enemies.length; i++) {
             var enemy = enemies[i];
 
-            if (enemy.state = enemy.NORMAL) {
-
+            if (enemy.state === enemy.NORMAL) {
 
                 var scale = enemy.y / canvas.height;
-
                 enemy.y += enemy.vy * scale;
                 enemy.x = -1 * (enemy.vectorB() - enemy.y) / enemy.vectorA();
-
-
                 enemy.width = enemy.sourceWidth * scale;
                 enemy.height = enemy.sourceHeight * scale;
-
             }
 
             if (enemy.y > canvas.height + enemy.height) {
@@ -229,7 +220,6 @@
         missile.sourceHeight = 32;
         missile.width = 32;
         missile.height = 32;
-
         missile.x = hero.centerX() - missile.halfWidth();
         missile.y = canvas.height - (hero.height + missile.height);
         missile.startPointX = canvas.width / 2;
@@ -238,7 +228,6 @@
         missile.endPointY = missile.y;
         sprites.push(missile);
         missiles.push(missile);
-
     }
 
     function removeObject(objectToRemowe, array) {
@@ -246,40 +235,29 @@
         if (i !== -1) {
             array.splice(i, 1);
         }
-
     }
 
     function makeEnemy() {
         var enemy = Object.create(enemyObject);
         enemy.sourceX = 64;
         enemy.y = 0.2 * canvas.height; //0 - enemy.height;
-
-        enemy.x = randomPosition * enemy.width;
         enemy.vy = 1;
-
-
         var randomPosition = Math.floor(Math.random() * canvas.width / enemy.width);
         enemy.startPointX = canvas.width / 2;
+        enemy.x = enemy.startPointX;
         enemy.endPointX = randomPosition * enemy.width;
         enemy.endPointY = canvas.height;
-
         sprites.push(enemy);
         enemies.push(enemy);
     }
 
-
     function destroyEnemy(enemy){
         enemy.state = enemy.DEAD;
-        enemy.vy = 0;
         enemy.update();
-
-
         setTimeout(removeEnemy, 2000);
-
         function removeEnemy() {
             removeObject(enemy, enemies);
             removeObject(enemy, sprites);
-
         }
     }
 
