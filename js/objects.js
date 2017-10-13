@@ -1,11 +1,12 @@
 var spriteObject =
     {
+        image: "",
         sourceX: 0,
         sourceY: 0,
-        sourceWidth: 64,
-        sourceHeight: 64,
-        width: 64,
-        height: 64,
+        sourceWidth: 80,
+        sourceHeight: 110,
+        width: 80,
+        height: 110,
         x: 0,
         y: 0,
         vx: 0,
