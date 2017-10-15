@@ -118,6 +118,8 @@
     render();
   }
 
+
+
   function loadHandler() {
     assetsLoaded++;
     if (assetsLoaded === assetsToLoad.length) {
@@ -182,6 +184,7 @@
         enemy.x = -1 * (enemy.vectorB() - enemy.y) / enemy.vectorA();
         enemy.width = enemy.sourceWidth * scale;
         enemy.height = enemy.sourceHeight * scale;
+
       }
 
       if (enemy.y > canvas.height + enemy.height) {
@@ -259,6 +262,7 @@
 
   function makeEnemy() {
     var enemy = Object.create(enemyObject);
+    enemy.numberOfFrames = 18;
     enemy.image = enemyImg;
     enemy.sourceX = 0;
     enemy.y = 0.2 * canvas.height; //0 - enemy.height;
@@ -268,6 +272,9 @@
     enemy.x = enemy.startPointX;
     enemy.endPointX = randomPosition * enemy.width;
     enemy.endPointY = canvas.height;
+    enemy.firstAnimationFrame = 0;
+    enemy.lastAnimationFrame = 18;
+    enemy.startAnimation();
     sprites.push(enemy);
     enemies.push(enemy);
   }
