@@ -1,1 +1,11 @@
 
+
+.game_window {
+    border: 3px solid green;
+    height: 640px;
+    width: 960px;
+}
+.game_status {
+    border: 3px solid green;
+    width: 960px;
+}
