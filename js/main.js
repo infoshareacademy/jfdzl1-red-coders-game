@@ -184,6 +184,7 @@
         enemy.x = -1 * (enemy.vectorB() - enemy.y) / enemy.vectorA();
         enemy.width = enemy.sourceWidth * scale;
         enemy.height = enemy.sourceHeight * scale;
+        enemy.updateAnimation();
 
       }
 
@@ -216,7 +217,7 @@
   function render() {
     drawingSurface.clearRect(0, 0, canvas.width, canvas.height);
     if (sprites.length !== 0) {
-      for (var i = 0; i < sprites.length; i++) {
+      for (var i = 0; i <sprites.length; i++) {
         var sprite = sprites[i];
         drawingSurface.drawImage(
           sprite.image,
@@ -243,7 +244,7 @@
     missile.sourceHeight = 32;
     missile.width = 32;
     missile.height = 32;
-    missile.x = hero.centerX() - missile.halfWidth();
+    missile.x = hero.centerX() - missile.height;
     missile.y = canvas.height - (hero.height + missile.height);
     missile.startPointX = canvas.width / 2;
     missile.vy = -8;
@@ -274,7 +275,6 @@
     enemy.endPointY = canvas.height;
     enemy.firstAnimationFrame = 0;
     enemy.lastAnimationFrame = 18;
-    enemy.startAnimation();
     sprites.push(enemy);
     enemies.push(enemy);
   }
