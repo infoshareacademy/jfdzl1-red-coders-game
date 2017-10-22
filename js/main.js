@@ -1,4 +1,4 @@
-(function () {
+(function (spriteObject, enemyObject) {
   'use strict';
   var canvas = document.querySelector("canvas");
   var drawingSurface = canvas.getContext("2d");
@@ -35,20 +35,16 @@
   background.height = 640;
   sprites.push(background);
 
-
   var hero = Object.create(spriteObject);
   hero.image = heroImage;
   hero.x = canvas.width / 2 - hero.width / 2;
   hero.y = canvas.height - hero.height;
   sprites.push(hero);
 
-
   var assetsLoaded = 0;
-
 
   var enemyFrequency = 120;
   var enemyTimer = 0;
-
 
   var LOADING = 0;
   var PLAYING = 1;
@@ -56,7 +52,6 @@
   var gameState = LOADING;
 
   //Key codes and directions
-
   var RIGHT = 39;
   var LEFT = 37;
   var SPACE = 32;
@@ -65,7 +60,6 @@
   var moveLeft = false;
   var shoot = false;
   var spaceKeyIdDown = false;
-
 
   window.addEventListener("keydown", function (event) {
     switch (event.keyCode) {
@@ -81,8 +75,8 @@
           spaceKeyIdDown = true;
         }
     }
+    event.preventDefault()
   }, false);
-
 
   window.addEventListener("keyup", function (event) {
     switch (event.keyCode) {
@@ -95,15 +89,16 @@
       case  SPACE:
         spaceKeyIdDown = false;
     }
+    event.preventDefault()
   }, false);
 
 
-//Start here
+  //Start here
   update();
-
+  
   function update() {
-    requestAnimationFrame(update, canvas);
-
+    requestAnimationFrame(update, canvas);    
+    
     switch (gameState) {
       case LOADING:
         console.log("Loading...");
@@ -115,19 +110,13 @@
         endGame();
         break;
     }
-    render();
+
+    render();    
   }
-
-
 
   function loadHandler() {
     assetsLoaded++;
     if (assetsLoaded === assetsToLoad.length) {
-
-      // for (var i = 0; i < images.length; i++) {
-      //   images[i].removeEventListener("load", loadHandler, false);
-      // }
-
       gameState = PLAYING;
     }
   }
@@ -208,10 +197,7 @@
 
   }
 
-
-  function endGame() {
-
-  }
+  function endGame() {}
 
   function render() {
     drawingSurface.clearRect(0, 0, canvas.width, canvas.height);
@@ -226,7 +212,6 @@
           sprite.width, sprite.height
         );
       }
-
     }
   }
 
@@ -277,6 +262,7 @@
     enemy.startAnimation();
     sprites.push(enemy);
     enemies.push(enemy);
+    console.log(enemy)
   }
 
   function destroyEnemy(enemy) {
@@ -289,6 +275,4 @@
       removeObject(enemy, sprites);
     }
   }
-
-
-}());
+}(spriteObject, enemyObject));
