@@ -18,6 +18,8 @@
     var moveLeft = false;
     var shoot = false;
     var spaceKeyIsDown = false;
+    var touchX = 0;
+    var touchY = 0;
 
     var backgroundImage = new Image();
     backgroundImage.addEventListener("load", loadHandler, false);
@@ -86,6 +88,8 @@
         }
     }, false);
 
+    canvas.addEventListener("touchmove", touchmoveHandler, false);
+
     function update() {
         requestAnimationFrame(update, canvas);
         switch (gameState) {
@@ -107,6 +111,14 @@
         if (assetsLoaded === assetsToLoad.length) {
             gameState = PLAYING;
         }
+    }
+
+    function touchmoveHandler(event)
+    {
+        touchX = event.targetTouches[0].pageX - canvas.offsetLeft;
+        touchY = event.targetTouches[0].pageY - canvas.offsetTop;
+        event.preventDefault();
+        console.log("x: " + touchX + ' y: ' + touchY);
     }
 
     function playGame() {

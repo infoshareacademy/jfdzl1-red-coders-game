@@ -1,13 +1,17 @@
 
 .container {
+    width: -moz-fit-content;
     width: fit-content;
     margin: auto;
 }
 
 .game_window {
     border: 3px solid green;
+    width: -moz-fit-content;
     width: fit-content;
+    height: -moz-fit-content;
     height: fit-content;
+
 }
 
 .canvas {
