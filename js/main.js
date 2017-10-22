@@ -1,14 +1,23 @@
-(function () {
+(function (spriteObject, enemyObject) {
     'use strict';
     var canvas = document.querySelector("canvas");
     var drawingSurface = canvas.getContext("2d");
-
     var sprites = [];
     var assetsToLoad = [];
     var missiles = [];
     var enemies = [];
-
-
+    var assetsLoaded = 0;
+    var enemyFrequency = 120;
+    var enemyTimer = 0;
+    var LOADING = 0;
+    var PLAYING = 1;
+    var OVER = 2;
+    var gameState = LOADING;
+    //Directions
+    var moveRight = false;
+    var moveLeft = false;
+    var shoot = false;
+    var spaceKeyIsDown = false;
 
     var backgroundImage = new Image();
     backgroundImage.addEventListener("load", loadHandler, false);
@@ -25,7 +34,6 @@
     enemyImg.src = "./images/sprites_yanush.png";
     assetsToLoad.push(enemyImg);
 
-
     var background = Object.create(spriteObject);
     background.image = backgroundImage;
     background.x = 0;
@@ -37,7 +45,6 @@
     background.height = 640;
     sprites.push(background);
 
-
     var hero = Object.create(spriteObject);
     hero.image = heroImage;
     hero.x = canvas.width / 2 - hero.width / 2;
@@ -48,68 +55,39 @@
     hero.timerCounter = 15;
     sprites.push(hero);
 
-
-    var assetsLoaded = 0;
-
-
-    var enemyFrequency = 120;
-    var enemyTimer = 0;
-
-
-    var LOADING = 0;
-    var PLAYING = 1;
-    var OVER = 2;
-    var gameState = LOADING;
-
-    //Key codes and directions
-
-    var RIGHT = 39;
-    var LEFT = 37;
-    var SPACE = 32;
-
-    var moveRight = false;
-    var moveLeft = false;
-    var shoot = false;
-    var spaceKeyIdDown = false;
-
-
     window.addEventListener("keydown", function (event) {
-        switch (event.keyCode) {
-            case  LEFT:
+        event.preventDefault();
+        switch (event.key) {
+            case  "ArrowLeft":
                 moveLeft = true;
                 break;
-            case RIGHT:
+            case "ArrowRight":
                 moveRight = true;
                 break;
-            case SPACE:
-                if (!spaceKeyIdDown) {
+            case " ":
+                if (!spaceKeyIsDown) {
                     shoot = true;
-                    spaceKeyIdDown = true;
+                    spaceKeyIsDown = true;
                 }
         }
     }, false);
 
-
     window.addEventListener("keyup", function (event) {
-        switch (event.keyCode) {
-            case LEFT:
+        event.preventDefault();
+        switch (event.key) {
+            case "ArrowLeft":
                 moveLeft = false;
                 break;
-            case RIGHT:
+            case "ArrowRight":
                 moveRight = false;
                 break;
-            case  SPACE:
-                spaceKeyIdDown = false;
+            case  " ":
+                spaceKeyIsDown = false;
         }
     }, false);
 
-
-//Start here
-    update();
-
     function update() {
         requestAnimationFrame(update, canvas);
-
         switch (gameState) {
             case LOADING:
                 console.log("Loading...");
@@ -124,15 +102,9 @@
         render();
     }
 
-
     function loadHandler() {
         assetsLoaded++;
         if (assetsLoaded === assetsToLoad.length) {
-
-            // for (var i = 0; i < images.length; i++) {
-            //   images[i].removeEventListener("load", loadHandler, false);
-            // }
-
             gameState = PLAYING;
         }
     }
@@ -160,14 +132,12 @@
 
         for (var i = 0; i < missiles.length; i++) {
             var missile = missiles[i];
-
             var scale = missile.y / canvas.height;
 
             missile.y += missile.vy * scale;
             missile.width = missile.sourceWidth * scale;
             missile.height = missile.sourceHeight * scale;
             missile.x = -1 * (missile.vectorB() - missile.y) / missile.vectorA();
-
 
             if (missile.y < canvas.height * 0.2) {
                 removeObject(missile, missiles);
@@ -194,7 +164,6 @@
                 enemy.width = enemy.sourceWidth * scale;
                 enemy.height = enemy.sourceHeight * scale;
                 enemy.updateAnimation();
-
             }
 
             if (enemy.y > canvas.height + enemy.height) {
@@ -218,22 +187,17 @@
 
     }
 
-
-    function endGame() {
-
-    }
+    function endGame() {}
 
     function render() {
         drawingSurface.clearRect(0, 0, canvas.width, canvas.height);
         if (sprites.length !== 0) {
             var sprite;
-
                 sprite = sprites[0];
                 drawSprite(sprite);
             for (var i = sprites.length - 1; i > 0; i--) {
                 sprite = sprites[i];
                 drawSprite(sprite);
-
             }
 
             function drawSprite(sprite) {
@@ -245,10 +209,6 @@
                     sprite.width, sprite.height
                 );
             }
-
-
-
-
         }
     }
 
@@ -307,7 +267,6 @@
                 break;
         }
 
-
         sprites.push(enemy);
         enemies.push(enemy);
     }
@@ -323,5 +282,6 @@
         }
     }
 
-
-}());
+//Start here
+    update();
+}(spriteObject, enemyObject));

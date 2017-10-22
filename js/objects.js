@@ -16,7 +16,6 @@ var spriteObject =
         endPointX: 0,
         endPointY: 0,
         visible: true,
-
         numberOffColumns: 9,
         numberOffFrames: 1,
         currentFrame: 0,
@@ -62,7 +61,6 @@ var spriteObject =
         }
     };
 
-
 var enemyObject = Object.create(spriteObject);
 enemyObject.NORMAL = 1;
 enemyObject.DEAD = 2;
@@ -72,7 +70,6 @@ enemyObject.update = function () {
         this.currentFrame = 6;
         this.updateSourceImg();
     }
-
 };
 
 
