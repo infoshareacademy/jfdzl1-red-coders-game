@@ -6,7 +6,7 @@
 }
 
 .game_window {
-    border: 3px solid green;
+    border: 3px solid #008000;
     width: -moz-fit-content;
     width: fit-content;
     height: -moz-fit-content;

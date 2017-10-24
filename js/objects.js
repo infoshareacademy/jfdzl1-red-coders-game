@@ -72,4 +72,15 @@ enemyObject.update = function () {
     }
 };
 
+var messageObject =
+  {
+    x: 0,
+    y: 0,
+    visible: false,
+    text: "Message",
+    font: "normal bold 30px Helvetica",
+    fillStyle: "black",
+    textBaseline: "top"
+  };
+
 
