@@ -1,6 +1,6 @@
 var spriteObject =
     {
-        image: "",
+        image: '',
         sourceX: 0,
         sourceY: 0,
         sourceWidth: 80,
@@ -64,11 +64,14 @@ var spriteObject =
 var enemyObject = Object.create(spriteObject);
 enemyObject.NORMAL = 1;
 enemyObject.DEAD = 2;
+enemyObject.ESCAPE = 3;
 enemyObject.state = enemyObject.NORMAL;
 enemyObject.update = function () {
     if (this.state === this.DEAD) {
         this.currentFrame = 6;
         this.updateSourceImg();
+    } else if (this.state === this.ESCAPE) {
+
     }
 };
 
@@ -77,10 +80,11 @@ var messageObject =
     x: 0,
     y: 0,
     visible: false,
-    text: "Message",
-    font: "normal bold 30px Helvetica",
-    fillStyle: "black",
-    textBaseline: "top"
+    text: 'Message',
+    font: 'normal bold 30px Helvetica',
+    fillStyle: 'black',
+    textBaseline: 'top',
+    textAlign: 'left'
   };
 
 

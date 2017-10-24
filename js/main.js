@@ -1,7 +1,7 @@
 (function (spriteObject, enemyObject, messageObject) {
   'use strict';
-  var canvas = document.querySelector("canvas");
-  var drawingSurface = canvas.getContext("2d");
+  var canvas = document.querySelector('canvas');
+  var drawingSurface = canvas.getContext('2d');
   var sprites = [];
   var assetsToLoad = [];
   var missiles = [];
@@ -15,9 +15,11 @@
   var OVER = 2;
   var SCORE_MESS = 'Score: ';
   var START_LIVES = 5;
+  var START_BORING = 6;
   var LIVE_MESS = 'Lives: ';
   var gameState = LOADING;
   var scores = 0;
+  var boring = 0;
 
   //Directions
   var moveRight = false;
@@ -28,18 +30,18 @@
   var touchY = 0;
 
   var backgroundImage = new Image();
-  backgroundImage.addEventListener("load", loadHandler, false);
-  backgroundImage.src = "./images/tiles.png";
+  backgroundImage.addEventListener('load', loadHandler, false);
+  backgroundImage.src = './images/tiles.png';
   assetsToLoad.push(backgroundImage);
 
   var heroImage = new Image();
-  heroImage.addEventListener("load", loadHandler, false);
-  heroImage.src = "./images/sprites_player.png";
+  heroImage.addEventListener('load', loadHandler, false);
+  heroImage.src = './images/sprites_player.png';
   assetsToLoad.push(heroImage);
 
   var enemyImg = new Image();
-  enemyImg.addEventListener("load", loadHandler, false);
-  enemyImg.src = "./images/sprites_yanush.png";
+  enemyImg.addEventListener('load', loadHandler, false);
+  enemyImg.src = './images/sprites_yanush.png';
   assetsToLoad.push(enemyImg);
 
   var background = Object.create(spriteObject);
@@ -65,36 +67,58 @@
   sprites.push(hero);
 
   var scoreDisplay = Object.create(messageObject);
-  scoreDisplay.font = "normal bold 30px emulogic";
-  scoreDisplay.fillStyle = "#008000";
+  scoreDisplay.font = 'normal bold 40px HVD_Peace';
+  scoreDisplay.fillStyle = '#008000';
   scoreDisplay.x = Math.floor(canvas.width * 0.02);
   scoreDisplay.y = Math.floor(canvas.height * 0.02);
-  scoreDisplay.text =  SCORE_MESS + scores;
+  scoreDisplay.text =  returnScoreText();
   scoreDisplay.visible = true;
   messages.push(scoreDisplay);
 
 
   var livesDisplay = Object.create(messageObject);
-  livesDisplay.font = "normal bold 30px emulogic";
-  livesDisplay.fillStyle = "#008000";
-  livesDisplay.x = Math.floor(canvas.width * 0.15);
+  livesDisplay.font = 'normal bold 40px HVD_Peace';
+  livesDisplay.fillStyle = '#008000';
+  livesDisplay.x = Math.floor(canvas.width * 0.25);
   livesDisplay.y = Math.floor(canvas.height * 0.02);
-  livesDisplay.text =  LIVE_MESS + hero.lives;
+  livesDisplay.text =  returnLivesText();
   livesDisplay.visible = true;
   messages.push(livesDisplay);
 
-  window.addEventListener("keydown", function (event) {
+  var boringMetterMessage = Object.create(messageObject);
+  boringMetterMessage.font = 'normal bold 40px HVD_Peace';
+  boringMetterMessage.fillStyle = '#15009A';
+  boringMetterMessage.x = Math.floor(canvas.width * 0.55);
+  boringMetterMessage.y = Math.floor(canvas.height * 0.02);
+  boringMetterMessage.text =  returnBoringText();
+  boringMetterMessage.visible = true;
+  messages.push(boringMetterMessage);
+
+
+  var endGameMessage = Object.create(messageObject);
+  endGameMessage.font = 'normal bold 120px Sickness';
+  endGameMessage.fillStyle = '#FF2000';
+  endGameMessage.x = Math.floor(canvas.width / 2);
+  endGameMessage.y = Math.floor(canvas.height / 2);
+  endGameMessage.textAlign = 'center';
+  endGameMessage.textBaseline = 'middle';
+  endGameMessage.text =  'You lose';
+  endGameMessage.visible = false;
+  messages.push(endGameMessage);
+
+
+  window.addEventListener('keydown', function (event) {
 
     switch (event.key) {
-      case  "ArrowLeft":
+      case  'ArrowLeft':
         moveLeft = true;
         event.preventDefault();
         break;
-      case "ArrowRight":
+      case 'ArrowRight':
         moveRight = true;
         event.preventDefault();
         break;
-      case " ":
+      case ' ':
         event.preventDefault();
         if (!spaceKeyIsDown) {
           shoot = true;
@@ -103,30 +127,30 @@
     }
   }, false);
 
-  window.addEventListener("keyup", function (event) {
+  window.addEventListener('keyup', function (event) {
 
     switch (event.key) {
-      case "ArrowLeft":
+      case 'ArrowLeft':
         moveLeft = false;
         event.preventDefault();
         break;
-      case "ArrowRight":
+      case 'ArrowRight':
         moveRight = false;
         event.preventDefault();
         break;
-      case  " ":
+      case  ' ':
         spaceKeyIsDown = false;
         event.preventDefault();
     }
   }, false);
 
-  canvas.addEventListener("touchmove", touchmoveHandler, false);
+  canvas.addEventListener('touchmove', touchmoveHandler, false);
 
   function update() {
     requestAnimationFrame(update, canvas);
     switch (gameState) {
       case LOADING:
-        console.log("Loading...");
+        console.log('Loading...');
         break;
       case PLAYING:
         playGame();
@@ -149,7 +173,7 @@
     touchX = event.targetTouches[0].pageX - canvas.offsetLeft;
     touchY = event.targetTouches[0].pageY - canvas.offsetTop;
     event.preventDefault();
-    console.log("x: " + touchX + ' y: ' + touchY);
+    console.log('x: ' + touchX + ' y: ' + touchY);
   }
 
   function playGame() {
@@ -210,6 +234,18 @@
       }
 
       if (enemy.y > canvas.height + enemy.height) {
+        boring++;
+        if (START_BORING - boring < 0) {
+          boring = 0;
+          hero.lives--;
+          if (hero.lives <= 0) {
+            gameState = OVER;
+          }
+        }
+
+        boringMetterMessage.text = returnBoringText();
+        livesDisplay.text = returnLivesText();
+
         removeObject(enemy, enemies);
         removeObject(enemy, sprites);
       }
@@ -220,6 +256,7 @@
   }
 
   function endGame() {
+    endGameMessage.visible = true;
   }
 
   function checkIfHit() {
@@ -247,7 +284,11 @@
         hero.lives--;
         removeObject(enemy, enemies);
         removeObject(enemy, sprites);
+
         livesDisplay.text = LIVE_MESS + hero.lives;
+        if (hero.lives === 0) {
+          gameState = OVER;
+        }
       }
     }
   }
@@ -280,6 +321,7 @@
           drawingSurface.font = message.font;
           drawingSurface.fillStyle = message.fillStyle;
           drawingSurface.textBaseline = message.textBaseline;
+          drawingSurface.textAlign = message.textAlign;
           drawingSurface.fillText(message.text, message.x, message.y);
         }
       }
@@ -344,6 +386,22 @@
 
     sprites.push(enemy);
     enemies.push(enemy);
+  }
+
+  function returnBoringText() {
+    return 'Boring: ' + '☹'.repeat(boring);
+  }
+
+  function returnScoreText() {
+    return 'Score: ' + scores;
+  }
+
+  function returnLivesText() {
+    return 'Lives: ' + hero.lives;
+  }
+
+  function escapeEnemy(enemy) {
+    enemy.state = enemy.ESCAPE;
   }
 
   function destroyEnemy(enemy) {

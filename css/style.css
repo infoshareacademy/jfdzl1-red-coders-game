@@ -1,4 +1,14 @@
 
+@font-face {
+    font-family: HVD_Peace;
+    src: url("../fonts/HVD_Peace.ttf");
+}
+
+@font-face {
+    font-family: Sickness;
+    src: url("../fonts/Sickness.ttf")
+}
+
 .container {
     width: -moz-fit-content;
     width: fit-content;
