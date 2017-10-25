@@ -38,7 +38,11 @@ var spriteObject =
             return this.height / 2;
         },
         vectorA: function () {
-            return (this.endPointY - this.startPointY) / (this.startPointX - this.endPointX) * -1;
+          var diferrOnX = this.startPointX - this.endPointX;
+          if (diferrOnX === 0 ) {
+            diferrOnX = 0.1;
+          }
+            return (this.endPointY - this.startPointY) / (diferrOnX) * -1;
         },
         vectorB: function () {
             return this.endPointY - (this.vectorA() * this.endPointX);

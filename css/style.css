@@ -21,14 +21,8 @@
     width: fit-content;
     height: -moz-fit-content;
     height: fit-content;
-
 }
 
 .canvas {
     max-width: 100%;
-}
-
-.game_status {
-    border: 3px solid green;
-    width: auto;
 }

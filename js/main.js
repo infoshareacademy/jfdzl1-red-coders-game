@@ -79,7 +79,7 @@
   var livesDisplay = Object.create(messageObject);
   livesDisplay.font = 'normal bold 40px HVD_Peace';
   livesDisplay.fillStyle = '#008000';
-  livesDisplay.x = Math.floor(canvas.width * 0.25);
+  livesDisplay.x = Math.floor(canvas.width * 0.3);
   livesDisplay.y = Math.floor(canvas.height * 0.02);
   livesDisplay.text =  returnLivesText();
   livesDisplay.visible = true;
@@ -242,10 +242,8 @@
             gameState = OVER;
           }
         }
-
         boringMetterMessage.text = returnBoringText();
         livesDisplay.text = returnLivesText();
-
         removeObject(enemy, enemies);
         removeObject(enemy, sprites);
       }
