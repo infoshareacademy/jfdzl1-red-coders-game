@@ -224,7 +224,6 @@
       var enemy = enemies[i];
 
       if (enemy.state === enemy.NORMAL) {
-
         var scale = enemy.y / canvas.height;
         enemy.y += enemy.vy * scale;
         enemy.x = -1 * (enemy.vectorB() - enemy.y) / enemy.vectorA();
@@ -233,7 +232,7 @@
         enemy.updateAnimation();
       }
 
-      if (enemy.y > canvas.height + enemy.height) {
+      if (enemy.NORMAL && enemy.y > (canvas.height + enemy.height)) {
         boring++;
         if (START_BORING - boring < 0) {
           boring = 0;
@@ -246,6 +245,15 @@
         livesDisplay.text = returnLivesText();
         removeObject(enemy, enemies);
         removeObject(enemy, sprites);
+      }
+
+      if (enemy.state === enemy.ESCAPE) {
+        enemy.x += enemy.vx;
+        enemy.updateAnimation();
+        if (enemy.x < (0 - enemy.width) || enemy.x > (canvas.width + enemy.width)) {
+          removeObject(enemy, enemies);
+          removeObject(enemy, sprites);
+        }
       }
     }
     checkIfHit();
@@ -262,8 +270,10 @@
       var enemy = enemies[i];
       for (var j = 0; j < missiles.length; j++) {
         var missile = missiles[j];
-        if (hitTestRectangle(missile, enemy) && enemy.state === enemy.NORMAL) {
-          destroyEnemy(enemy);
+        if (enemy.state === enemy.NORMAL && hitTestRectangle(missile, enemy)) {
+          // destroyEnemy(enemy);
+
+          escapeEnemy(enemy);
           scores++;
           removeObject(missile, missiles);
           removeObject(missile, sprites);
@@ -400,6 +410,12 @@
 
   function escapeEnemy(enemy) {
     enemy.state = enemy.ESCAPE;
+    if (enemy.x >= background.halfWidth()) {
+      enemy.vx = 2;
+    } else {
+      enemy.vx = -2;
+    }
+    enemy.update();
   }
 
   function destroyEnemy(enemy) {

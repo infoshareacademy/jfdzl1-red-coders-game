@@ -75,7 +75,8 @@ enemyObject.update = function () {
         this.currentFrame = 6;
         this.updateSourceImg();
     } else if (this.state === this.ESCAPE) {
-
+      this.firstAnimationFrame = 3;
+      this.lastAnimationFrame = 5;
     }
 };
 
