@@ -26,8 +26,11 @@
   var moveLeft = false;
   var shoot = false;
   var spaceKeyIsDown = false;
-  var touchX = 0;
+  var touchX = canvas.width / 2;
   var touchY = 0;
+  var isTouched = false;
+
+  var throwButton = document.querySelector("#throwButton");
 
   var backgroundImage = new Image();
   backgroundImage.addEventListener('load', loadHandler, false);
@@ -146,6 +149,8 @@
 
   canvas.addEventListener('touchmove', touchmoveHandler, false);
 
+  throwButton.addEventListener("touchstart", throwButtonHandler, false)
+
   function update() {
     requestAnimationFrame(update, canvas);
     switch (gameState) {
@@ -169,11 +174,15 @@
     }
   }
 
+  function throwButtonHandler(event) {
+    shoot = true;
+  }
+
   function touchmoveHandler(event) {
     touchX = event.targetTouches[0].pageX - canvas.offsetLeft;
     touchY = event.targetTouches[0].pageY - canvas.offsetTop;
     event.preventDefault();
-    console.log('x: ' + touchX + ' y: ' + touchY);
+    isTouched = true;
   }
 
   function playGame() {
@@ -195,7 +204,16 @@
       shoot = false;
     }
 
-    hero.x = Math.max(0, Math.min(hero.x + hero.vx, canvas.width - hero.width));
+    if (isTouched) {
+      var displayedCanvas = $('.canvas');
+      var widthOnView =  displayedCanvas.width();
+      touchX = touchX * (canvas.width / widthOnView );
+      hero.x = touchX - (hero.halfWidth());
+      isTouched = false;
+    } else {
+      hero.x = Math.max(0, Math.min(hero.x + hero.vx, canvas.width - hero.width));
+    }
+
 
     for (var i = 0; i < missiles.length; i++) {
       var missile = missiles[i];
