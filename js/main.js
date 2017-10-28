@@ -29,8 +29,7 @@
   var touchX = canvas.width / 2;
   var touchY = 0;
   var isTouched = false;
-
-  var throwButton = document.querySelector("#throwButton");
+  var startTouch = false;
 
   var backgroundImage = new Image();
   backgroundImage.addEventListener('load', loadHandler, false);
@@ -78,7 +77,6 @@
   scoreDisplay.visible = true;
   messages.push(scoreDisplay);
 
-
   var livesDisplay = Object.create(messageObject);
   livesDisplay.font = 'normal bold 40px HVD_Peace';
   livesDisplay.fillStyle = '#008000';
@@ -96,7 +94,6 @@
   boringMetterMessage.text =  returnBoringText();
   boringMetterMessage.visible = true;
   messages.push(boringMetterMessage);
-
 
   var endGameMessage = Object.create(messageObject);
   endGameMessage.font = 'normal bold 120px Sickness';
@@ -148,8 +145,8 @@
   }, false);
 
   canvas.addEventListener('touchmove', touchmoveHandler, false);
-
-  throwButton.addEventListener("touchstart", throwButtonHandler, false)
+  canvas.addEventListener('touchstart', touchStartFireHandler, false);
+  canvas.addEventListener('touchend', touchEndFireHandler, false);
 
   function update() {
     requestAnimationFrame(update, canvas);
@@ -174,15 +171,33 @@
     }
   }
 
-  function throwButtonHandler(event) {
-    shoot = true;
-  }
-
   function touchmoveHandler(event) {
+    event.preventDefault();
     touchX = event.targetTouches[0].pageX - canvas.offsetLeft;
     touchY = event.targetTouches[0].pageY - canvas.offsetTop;
-    event.preventDefault();
-    isTouched = true;
+
+
+    var displayedCanvas = $('.canvas');
+    var widthOnView =  displayedCanvas.width();
+    var heightOnView = displayedCanvas.height();
+    touchX = touchX * (canvas.width / widthOnView );
+    touchY = touchY * (canvas.height / heightOnView);
+
+    if (touchTestRectangle(touchX, touchY, hero )) {
+      isTouched = true;
+      startTouch = false;
+    }
+  }
+
+  function touchStartFireHandler() {
+    startTouch = true;
+  }
+
+  function touchEndFireHandler() {
+    if (startTouch) {
+      startTouch = false;
+      shoot = true;
+    }
   }
 
   function playGame() {
@@ -205,15 +220,11 @@
     }
 
     if (isTouched) {
-      var displayedCanvas = $('.canvas');
-      var widthOnView =  displayedCanvas.width();
-      touchX = touchX * (canvas.width / widthOnView );
       hero.x = touchX - (hero.halfWidth());
       isTouched = false;
     } else {
       hero.x = Math.max(0, Math.min(hero.x + hero.vx, canvas.width - hero.width));
     }
-
 
     for (var i = 0; i < missiles.length; i++) {
       var missile = missiles[i];
