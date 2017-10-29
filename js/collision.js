@@ -39,7 +39,7 @@ function hitTestRectangle(r1, r2)
 
 
 
-function touchTestRectangle(x, y, r2)
+function touchTestRectangle(x, y, r2, offset)
 {
     //A variable to determine whether there's a touch
     var touch = false;
@@ -48,8 +48,8 @@ function touchTestRectangle(x, y, r2)
     var vx = x - r2.centerX();
     var vy = y - r2.centerY();
 
-    var combinedHalfWidths =  r2.halfWidth();
-    var combinedHalfHeights = r2.halfHeight();
+    var combinedHalfWidths =  r2.halfWidth() + offset;
+    var combinedHalfHeights = r2.halfHeight() + offset;
 
     //Check for a touch on the x axis
     if(Math.abs(vx) < combinedHalfWidths)
