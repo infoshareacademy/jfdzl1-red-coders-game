@@ -182,8 +182,8 @@
     var heightOnView = displayedCanvas.height();
     touchX = touchX * (canvas.width / widthOnView );
     touchY = touchY * (canvas.height / heightOnView);
-
-    if (touchTestRectangle(touchX, touchY, hero )) {
+    var offsetToMakeHeroBigger = hero.width;
+    if (touchTestRectangle(touchX, touchY, hero , offsetToMakeHeroBigger)) {
       isTouched = true;
       startTouch = false;
     }
