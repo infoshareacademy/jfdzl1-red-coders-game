@@ -92,4 +92,51 @@ var messageObject =
     textAlign: 'left'
   };
 
+var infoCloudObject = Object.create(spriteObject);
+infoCloudObject.NOT_SET = 0;
+infoCloudObject.ENEMY_READ = 1;
+infoCloudObject.ENEMY_LISTENING = 2;
+infoCloudObject.ENEMY_PLAY = 3;
+infoCloudObject.HERO_LOSE_LIFE = 4;
+infoCloudObject.HERO_GET_MORE_BORING = 5;
+infoCloudObject.HERO_GET_LESS_BORING = 6;
+infoCloudObject.state = infoCloudObject.NOT_SET;
+infoCloudObject.update = function () {
+
+    switch (this.state) {
+        case this.NOT_SET:
+            this.firstAnimationFrame = 0;
+            this.lastAnimationFrame = 2;
+            break;
+        case this.ENEMY_READ:
+            this.firstAnimationFrame = 3;
+            this.lastAnimationFrame = 5;
+            break;
+        case this.ENEMY_LISTENING:
+            this.firstAnimationFrame = 6;
+            this.lastAnimationFrame = 8;
+            break;
+        case this.ENEMY_PLAY:
+            this.firstAnimationFrame = 9;
+            this.lastAnimationFrame = 11;
+            break;
+        case this.HERO_LOSE_LIFE:
+            this.firstAnimationFrame = 12;
+            this.lastAnimationFrame = 14;
+            this.vy = -2;
+            break;
+        case this.HERO_GET_MORE_BORING:
+            this.firstAnimationFrame = 15;
+            this.lastAnimationFrame = 17;
+            this.vy = -2;
+            break;
+        case this.HERO_GET_LESS_BORING:
+            this.firstAnimationFrame = 18;
+            this.lastAnimationFrame = 20;
+            this.vy = -2;
+            break;
+    }
+};
+
+
 
