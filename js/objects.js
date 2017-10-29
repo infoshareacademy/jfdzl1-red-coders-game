@@ -1,6 +1,6 @@
 var spriteObject =
     {
-        image: "",
+        image: '',
         sourceX: 0,
         sourceY: 0,
         sourceWidth: 80,
@@ -38,7 +38,11 @@ var spriteObject =
             return this.height / 2;
         },
         vectorA: function () {
-            return (this.endPointY - this.startPointY) / (this.startPointX - this.endPointX) * -1;
+          var diferrOnX = this.startPointX - this.endPointX;
+          if (diferrOnX === 0 ) {
+            diferrOnX = 0.1;
+          }
+            return (this.endPointY - this.startPointY) / (diferrOnX) * -1;
         },
         vectorB: function () {
             return this.endPointY - (this.vectorA() * this.endPointX);
@@ -64,12 +68,28 @@ var spriteObject =
 var enemyObject = Object.create(spriteObject);
 enemyObject.NORMAL = 1;
 enemyObject.DEAD = 2;
+enemyObject.ESCAPE = 3;
 enemyObject.state = enemyObject.NORMAL;
 enemyObject.update = function () {
     if (this.state === this.DEAD) {
         this.currentFrame = 6;
         this.updateSourceImg();
+    } else if (this.state === this.ESCAPE) {
+      this.firstAnimationFrame = 3;
+      this.lastAnimationFrame = 5;
     }
 };
+
+var messageObject =
+  {
+    x: 0,
+    y: 0,
+    visible: false,
+    text: 'Message',
+    font: 'normal bold 30px Helvetica',
+    fillStyle: 'black',
+    textBaseline: 'top',
+    textAlign: 'left'
+  };
 
 
