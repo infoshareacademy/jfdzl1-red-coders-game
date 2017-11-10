@@ -1,4 +1,4 @@
-(function (spriteObject, enemyObject) {
+(function (spriteObject, enemyObject, messageObject) {
     'use strict';
     var canvas = document.querySelector("canvas");
     var drawingSurface = canvas.getContext("2d");
@@ -6,18 +6,43 @@
     var assetsToLoad = [];
     var missiles = [];
     var enemies = [];
+    var messages = [];
     var assetsLoaded = 0;
     var enemyFrequency = 120;
     var enemyTimer = 0;
     var LOADING = 0;
     var PLAYING = 1;
     var OVER = 2;
+    //additional game state
+    var LEVEL_COMPLETE = 3;
+    var SCORE_MESS = 'Score:';
+    var START_LIVES = 5;
+    var START_BORING = 6;
+    var LIVE_MESS = 'Lives:';
     var gameState = LOADING;
+    var scores = 0;
+    var boring = 0;
+    //nowe zmienne
+    var levelEnemyVelocityY = [];
+    var levelCounter = 0;
+    var enemyVelocityY1 = 1;
+    levelEnemyVelocityY.push(enemyVelocityY1);
+    var enemyVelocityY2 = 3;
+    levelEnemyVelocityY.push(enemyVelocityY2);
+    var enemyVelocityY3 = 9;
+    levelEnemyVelocityY.push(enemyVelocityY3);
+    var levelChangeTimer = 0;
+
+
     //Directions
     var moveRight = false;
     var moveLeft = false;
     var shoot = false;
     var spaceKeyIsDown = false;
+    var touchX = canvas.width / 2;
+    var touchY = 0;
+    var isTouched = false;
+    var startTouch = false;
 
     var backgroundImage = new Image();
     backgroundImage.addEventListener("load", loadHandler, false);
@@ -53,7 +78,19 @@
     hero.lastAnimationFrame = 2;
     hero.columnCount = 3;
     hero.timerCounter = 15;
+    hero.lives = START_LIVES;
     sprites.push(hero);
+
+    //trzeba tu dopisać jeszcze nowe obiekty messageObjects Henia, ja dopisuję narazie tylko swój...
+
+    var levelCompleteDisplay = Object.create(messageObject);
+    levelCompleteDisplay.font = 'normal bold 40px Helvetica';
+    levelCompleteDisplay.fillStyle = '#008000';
+    levelCompleteDisplay.x = Math.floor(canvas.width * 0.4);
+    levelCompleteDisplay.y = Math.floor(canvas.height * 0.4);
+    levelCompleteDisplay.text = 'CONGRATULATIONS! LEVEL COMPLETED. ';
+    levelCompleteDisplay.visible = false;
+    messages.push(levelCompleteDisplay);
 
     window.addEventListener("keydown", function (event) {
         event.preventDefault();
@@ -94,6 +131,9 @@
                 break;
             case PLAYING:
                 playGame();
+                break;
+            case LEVEL_COMPLETE:
+                levelComplete();
                 break;
             case OVER:
                 endGame();
@@ -184,7 +224,9 @@
                 }
             }
         }
-
+        if (scores === 10) {
+            gameState = LEVEL_COMPLETE;
+        }
     }
 
     function endGame() {}
@@ -282,6 +324,27 @@
         }
     }
 
+    function levelComplete(){
+        levelCompleteDisplay.visible = true;
+        levelChangeTimer++;
+        if (levelChangeTimer === 60) {
+            loadNextLevel();
+        }
+        function loadNextLevel() {
+            levelChangeTimer = 0;
+            levelCounter++;
+            if (levelCounter <  levelEnemyVelocityY.length) {
+                sprites = [];
+                scores = 0;
+                boring = 0;
+                enemy.vy = levelEnemyVelocityY[levelCounter];
+                gameState = PLAYING;
+            } else {
+                gameState = OVER;
+            }
+        }
+    }
+
 //Start here
     update();
-}(spriteObject, enemyObject));
+}(spriteObject, enemyObject, messageObject));

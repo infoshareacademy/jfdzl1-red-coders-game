@@ -38,6 +38,10 @@ var spriteObject =
             return this.height / 2;
         },
         vectorA: function () {
+            var differOnX = this.startPointX - this.endPointX;
+            if (differOnX === 0) {
+                differOnX = 0.1;
+            }
             return (this.endPointY - this.startPointY) / (this.startPointX - this.endPointX) * -1;
         },
         vectorB: function () {
@@ -64,12 +68,25 @@ var spriteObject =
 var enemyObject = Object.create(spriteObject);
 enemyObject.NORMAL = 1;
 enemyObject.DEAD = 2;
+enemyObject.ESCAPE = 3;
 enemyObject.state = enemyObject.NORMAL;
 enemyObject.update = function () {
     if (this.state === this.DEAD) {
         this.currentFrame = 6;
         this.updateSourceImg();
+    } else if (this.state === this.ESCAPE) {
+        this.firstAnimatiofFrame = 3;
+        this.lastAnimationFrame = 5;
     }
 };
 
-
+var messageObject = {
+    x:0,
+    y:0,
+    visible: false,
+    text: 'Message',
+    font: 'normal bold 30px Helvetica',
+    fillStyle: 'black',
+    textBaseline: 'top',
+    textAlign: 'left'
+};
