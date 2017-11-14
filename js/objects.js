@@ -42,7 +42,7 @@ var spriteObject =
             if (differOnX === 0) {
                 differOnX = 0.1;
             }
-            return (this.endPointY - this.startPointY) / (this.startPointX - this.endPointX) * -1;
+            return (this.endPointY - this.startPointY) / differOnX * -1;
         },
         vectorB: function () {
             return this.endPointY - (this.vectorA() * this.endPointX);
@@ -75,18 +75,19 @@ enemyObject.update = function () {
         this.currentFrame = 6;
         this.updateSourceImg();
     } else if (this.state === this.ESCAPE) {
-        this.firstAnimatiofFrame = 3;
+        this.firstAnimationFrame = 3;
         this.lastAnimationFrame = 5;
     }
 };
 
 var messageObject = {
-    x:0,
-    y:0,
-    visible: false,
-    text: 'Message',
-    font: 'normal bold 30px Helvetica',
-    fillStyle: 'black',
-    textBaseline: 'top',
-    textAlign: 'left'
-};
+        x: 0,
+        y: 0,
+        visible: false,
+        text: 'Message',
+        font: 'normal bold 30px Helvetica',
+        fillStyle: 'black',
+        textBaseline: 'top',
+        textAlign: 'left',
+    }
+;

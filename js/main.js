@@ -1,7 +1,7 @@
 (function (spriteObject, enemyObject, messageObject) {
     'use strict';
-    var canvas = document.querySelector("canvas");
-    var drawingSurface = canvas.getContext("2d");
+    var canvas = document.querySelector('canvas');
+    var drawingSurface = canvas.getContext('2d');
     var sprites = [];
     var assetsToLoad = [];
     var missiles = [];
@@ -9,30 +9,19 @@
     var messages = [];
     var assetsLoaded = 0;
     var enemyFrequency = 120;
+    var velocity = 1;
     var enemyTimer = 0;
     var LOADING = 0;
     var PLAYING = 1;
     var OVER = 2;
-    //additional game state
     var LEVEL_COMPLETE = 3;
-    var SCORE_MESS = 'Score:';
+    var SCORE_MESS = 'Score: ';
     var START_LIVES = 5;
     var START_BORING = 6;
-    var LIVE_MESS = 'Lives:';
+    var LIVE_MESS = 'Lives: ';
     var gameState = LOADING;
     var scores = 0;
     var boring = 0;
-    //nowe zmienne
-    var levelEnemyVelocityY = [];
-    var levelCounter = 0;
-    var enemyVelocityY1 = 1;
-    levelEnemyVelocityY.push(enemyVelocityY1);
-    var enemyVelocityY2 = 3;
-    levelEnemyVelocityY.push(enemyVelocityY2);
-    var enemyVelocityY3 = 9;
-    levelEnemyVelocityY.push(enemyVelocityY3);
-    var levelChangeTimer = 0;
-
 
     //Directions
     var moveRight = false;
@@ -44,19 +33,31 @@
     var isTouched = false;
     var startTouch = false;
 
+    //new variables
+    var levelEnemyVelocity = [];
+    var levelCounter = 0;
+    var levelCounterDisplay=1;
+    var enemyVelocity1 = 1;
+    levelEnemyVelocity.push(enemyVelocity1);
+    var enemyVelocity2 = 2;
+    levelEnemyVelocity.push(enemyVelocity2);
+    var enemyVelocity3 = 3;
+    levelEnemyVelocity.push(enemyVelocity3);
+    var levelChangeTimer = 0;
+
     var backgroundImage = new Image();
-    backgroundImage.addEventListener("load", loadHandler, false);
-    backgroundImage.src = "./images/tiles.png";
+    backgroundImage.addEventListener('load', loadHandler, false);
+    backgroundImage.src = './images/tiles.png';
     assetsToLoad.push(backgroundImage);
 
     var heroImage = new Image();
-    heroImage.addEventListener("load", loadHandler, false);
-    heroImage.src = "./images/sprites_player.png";
+    heroImage.addEventListener('load', loadHandler, false);
+    heroImage.src = './images/sprites_player.png';
     assetsToLoad.push(heroImage);
 
     var enemyImg = new Image();
-    enemyImg.addEventListener("load", loadHandler, false);
-    enemyImg.src = "./images/sprites_yanush.png";
+    enemyImg.addEventListener('load', loadHandler, false);
+    enemyImg.src = './images/sprites_yanush.png';
     assetsToLoad.push(enemyImg);
 
     var background = Object.create(spriteObject);
@@ -81,27 +82,68 @@
     hero.lives = START_LIVES;
     sprites.push(hero);
 
-    //trzeba tu dopisać jeszcze nowe obiekty messageObjects Henia, ja dopisuję narazie tylko swój...
+    var scoreDisplay = Object.create(messageObject);
+    scoreDisplay.font = 'normal bold 40px HVD_Peace';
+    scoreDisplay.fillStyle = '#008000';
+    scoreDisplay.x = Math.floor(canvas.width * 0.02);
+    scoreDisplay.y = Math.floor(canvas.height * 0.02);
+    scoreDisplay.text =  returnScoreText();
+    scoreDisplay.visible = true;
+    messages.push(scoreDisplay);
+
+    var livesDisplay = Object.create(messageObject);
+    livesDisplay.font = 'normal bold 40px HVD_Peace';
+    livesDisplay.fillStyle = '#008000';
+    livesDisplay.x = Math.floor(canvas.width * 0.3);
+    livesDisplay.y = Math.floor(canvas.height * 0.02);
+    livesDisplay.text =  returnLivesText();
+    livesDisplay.visible = true;
+    messages.push(livesDisplay);
+
+    var boringMetterMessage = Object.create(messageObject);
+    boringMetterMessage.font = 'normal bold 40px HVD_Peace';
+    boringMetterMessage.fillStyle = '#15009A';
+    boringMetterMessage.x = Math.floor(canvas.width * 0.55);
+    boringMetterMessage.y = Math.floor(canvas.height * 0.02);
+    boringMetterMessage.text =  returnBoringText();
+    boringMetterMessage.visible = true;
+    messages.push(boringMetterMessage);
+
+    var endGameMessage = Object.create(messageObject);
+    endGameMessage.font = 'normal bold 120px Sickness';
+    endGameMessage.fillStyle = '#FF2000';
+    endGameMessage.x = Math.floor(canvas.width / 2);
+    endGameMessage.y = Math.floor(canvas.height / 2);
+    endGameMessage.textAlign = 'center';
+    endGameMessage.textBaseline = 'middle';
+    endGameMessage.text =  'You lose';
+    endGameMessage.visible = false;
+    messages.push(endGameMessage);
 
     var levelCompleteDisplay = Object.create(messageObject);
     levelCompleteDisplay.font = 'normal bold 40px Helvetica';
-    levelCompleteDisplay.fillStyle = '#008000';
-    levelCompleteDisplay.x = Math.floor(canvas.width * 0.4);
-    levelCompleteDisplay.y = Math.floor(canvas.height * 0.4);
-    levelCompleteDisplay.text = 'CONGRATULATIONS! LEVEL COMPLETED. ';
+    levelCompleteDisplay.fillStyle = '#ffffff';
+    levelCompleteDisplay.text = 'Congratulations! Level ' + levelCounterDisplay + ' completed.';
+    levelCompleteDisplay.x = Math.floor(canvas.width * 0.16);
+    levelCompleteDisplay.y = Math.floor(canvas.height * 0.5);
     levelCompleteDisplay.visible = false;
     messages.push(levelCompleteDisplay);
 
-    window.addEventListener("keydown", function (event) {
-        event.preventDefault();
+
+
+    window.addEventListener('keydown', function (event) {
+
         switch (event.key) {
-            case  "ArrowLeft":
+            case  'ArrowLeft':
                 moveLeft = true;
+                event.preventDefault();
                 break;
-            case "ArrowRight":
+            case 'ArrowRight':
                 moveRight = true;
+                event.preventDefault();
                 break;
-            case " ":
+            case ' ':
+                event.preventDefault();
                 if (!spaceKeyIsDown) {
                     shoot = true;
                     spaceKeyIsDown = true;
@@ -109,25 +151,32 @@
         }
     }, false);
 
-    window.addEventListener("keyup", function (event) {
-        event.preventDefault();
+    window.addEventListener('keyup', function (event) {
+
         switch (event.key) {
-            case "ArrowLeft":
+            case 'ArrowLeft':
                 moveLeft = false;
+                event.preventDefault();
                 break;
-            case "ArrowRight":
+            case 'ArrowRight':
                 moveRight = false;
+                event.preventDefault();
                 break;
-            case  " ":
+            case  ' ':
                 spaceKeyIsDown = false;
+                event.preventDefault();
         }
     }, false);
+
+    canvas.addEventListener('touchmove', touchmoveHandler, false);
+    canvas.addEventListener('touchstart', touchStartFireHandler, false);
+    canvas.addEventListener('touchend', touchEndFireHandler, false);
 
     function update() {
         requestAnimationFrame(update, canvas);
         switch (gameState) {
             case LOADING:
-                console.log("Loading...");
+                console.log('Loading...');
                 break;
             case PLAYING:
                 playGame();
@@ -146,6 +195,35 @@
         assetsLoaded++;
         if (assetsLoaded === assetsToLoad.length) {
             gameState = PLAYING;
+        }
+    }
+
+    function touchmoveHandler(event) {
+        event.preventDefault();
+        touchX = event.targetTouches[0].pageX - canvas.offsetLeft;
+        touchY = event.targetTouches[0].pageY - canvas.offsetTop;
+
+
+        var displayedCanvas = $('.canvas');
+        var widthOnView =  displayedCanvas.width();
+        var heightOnView = displayedCanvas.height();
+        touchX = touchX * (canvas.width / widthOnView );
+        touchY = touchY * (canvas.height / heightOnView);
+        var offsetToMakeHeroBigger = hero.width;
+        if (touchTestRectangle(touchX, touchY, hero , offsetToMakeHeroBigger)) {
+            isTouched = true;
+            startTouch = false;
+        }
+    }
+
+    function touchStartFireHandler() {
+        startTouch = true;
+    }
+
+    function touchEndFireHandler() {
+        if (startTouch) {
+            startTouch = false;
+            shoot = true;
         }
     }
 
@@ -168,7 +246,12 @@
             shoot = false;
         }
 
-        hero.x = Math.max(0, Math.min(hero.x + hero.vx, canvas.width - hero.width));
+        if (isTouched) {
+            hero.x = touchX - (hero.halfWidth());
+            isTouched = false;
+        } else {
+            hero.x = Math.max(0, Math.min(hero.x + hero.vx, canvas.width - hero.width));
+        }
 
         for (var i = 0; i < missiles.length; i++) {
             var missile = missiles[i];
@@ -197,7 +280,6 @@
             var enemy = enemies[i];
 
             if (enemy.state === enemy.NORMAL) {
-
                 var scale = enemy.y / canvas.height;
                 enemy.y += enemy.vy * scale;
                 enemy.x = -1 * (enemy.vectorB() - enemy.y) / enemy.vectorA();
@@ -206,37 +288,126 @@
                 enemy.updateAnimation();
             }
 
-            if (enemy.y > canvas.height + enemy.height) {
+            if (enemy.NORMAL && enemy.y > (canvas.height + enemy.height)) {
+                boring++;
+                if (START_BORING - boring < 0) {
+                    boring = 0;
+                    hero.lives--;
+                    if (hero.lives <= 0) {
+                        gameState = OVER;
+                    }
+                }
+                boringMetterMessage.text = returnBoringText();
+                livesDisplay.text = returnLivesText();
                 removeObject(enemy, enemies);
                 removeObject(enemy, sprites);
             }
-        }
 
+            if (enemy.state === enemy.ESCAPE) {
+                enemy.x += enemy.vx;
+                enemy.updateAnimation();
+                if (enemy.x < (0 - enemy.width) || enemy.x > (canvas.width + enemy.width)) {
+                    removeObject(enemy, enemies);
+                    removeObject(enemy, sprites);
+                }
+            }
+        }
+        checkIfHit();
+        checkMonsterTouchHero();
+
+    }
+
+    function endGame() {
+        endGameMessage.visible = true;
+    }
+
+    function checkIfHit() {
         for (var i = 0; i < enemies.length; i++) {
             var enemy = enemies[i];
             for (var j = 0; j < missiles.length; j++) {
                 var missile = missiles[j];
-                if (hitTestRectangle(missile, enemy) && enemy.state === enemy.NORMAL) {
-                    destroyEnemy(enemy);
+                if (enemy.state === enemy.NORMAL && hitTestRectangle(missile, enemy)) {
+                    // destroyEnemy(enemy);
+
+                    escapeEnemy(enemy);
+                    scores++;
                     removeObject(missile, missiles);
                     removeObject(missile, sprites);
                     j--;
+                    scoreDisplay.text = SCORE_MESS + scores;
                 }
             }
         }
         if (scores === 10) {
             gameState = LEVEL_COMPLETE;
+            levelCounterDisplay+=1;
         }
     }
 
-    function endGame() {}
+
+    function levelComplete(){
+
+        levelCompleteDisplay.visible = true;
+        levelChangeTimer++;
+        if (levelChangeTimer === 120) {
+            loadNextLevel();
+        }
+        function loadNextLevel() {
+            levelCompleteDisplay.visible = false;
+            levelChangeTimer = 0;
+            scores = 0;
+            if (levelCounter <  levelEnemyVelocity.length) {
+                levelCounter++;
+                sprites = [];
+                assetsToLoad = [];
+                missiles = [];
+                enemies = [];
+                messages = [];
+                assetsLoaded = 0;
+                enemyTimer = 0;
+                sprites.push(background);
+                assetsToLoad.push(backgroundImage);
+                assetsToLoad.push(heroImage);
+                assetsToLoad.push(enemyImg);
+                sprites.push(hero);
+                messages.push(scoreDisplay);
+                messages.push(livesDisplay);
+                messages.push(boringMetterMessage);
+                messages.push(endGameMessage);
+                messages.push(levelCompleteDisplay);
+                velocity = levelEnemyVelocity[levelCounter];
+                gameState = PLAYING;
+                enemyFrequency = 120 / levelEnemyVelocity[levelCounter];
+            } else {
+                gameState = OVER;
+            }
+        }
+    }
+
+
+    function checkMonsterTouchHero() {
+        for (var i = 0; i < enemies.length; i++) {
+            var enemy = enemies[i];
+            if (hitTestRectangle(enemy, hero)) {
+                destroyEnemy(enemy);
+                hero.lives--;
+                removeObject(enemy, enemies);
+                removeObject(enemy, sprites);
+
+                livesDisplay.text = LIVE_MESS + hero.lives;
+                if (hero.lives === 0) {
+                    gameState = OVER;
+                }
+            }
+        }
+    }
 
     function render() {
         drawingSurface.clearRect(0, 0, canvas.width, canvas.height);
         if (sprites.length !== 0) {
             var sprite;
-                sprite = sprites[0];
-                drawSprite(sprite);
+            sprite = sprites[0];
+            drawSprite(sprite);
             for (var i = sprites.length - 1; i > 0; i--) {
                 sprite = sprites[i];
                 drawSprite(sprite);
@@ -252,6 +423,19 @@
                 );
             }
         }
+        if (messages.length !== 0) {
+            for (var i = 0; i < messages.length; i++) {
+                var message = messages[i];
+                if (message.visible) {
+                    drawingSurface.font = message.font;
+                    drawingSurface.fillStyle = message.fillStyle;
+                    drawingSurface.textBaseline = message.textBaseline;
+                    drawingSurface.textAlign = message.textAlign;
+                    drawingSurface.fillText(message.text, message.x, message.y);
+                }
+            }
+        }
+
     }
 
     function fireMissile() {
@@ -292,7 +476,7 @@
         enemy.image = enemyImg;
         enemy.sourceX = 0;
         enemy.y = 0.2 * canvas.height; //0 - enemy.height;
-        enemy.vy = 1;
+        enemy.vy = velocity;
         var randomPosition = Math.floor(Math.random() * canvas.width / enemy.width);
         enemy.startPointX = canvas.width / 2;
         enemy.x = enemy.startPointX;
@@ -313,6 +497,28 @@
         enemies.push(enemy);
     }
 
+    function returnBoringText() {
+        return 'Boring: ' + '☹'.repeat(boring);
+    }
+
+    function returnScoreText() {
+        return 'Score: ' + scores;
+    }
+
+    function returnLivesText() {
+        return 'Lives: ' + hero.lives;
+    }
+
+    function escapeEnemy(enemy) {
+        enemy.state = enemy.ESCAPE;
+        if (enemy.x >= background.halfWidth()) {
+            enemy.vx = 2;
+        } else {
+            enemy.vx = -2;
+        }
+        enemy.update();
+    }
+
     function destroyEnemy(enemy) {
         enemy.state = enemy.DEAD;
         enemy.update();
@@ -324,27 +530,48 @@
         }
     }
 
-    function levelComplete(){
-        levelCompleteDisplay.visible = true;
-        levelChangeTimer++;
-        if (levelChangeTimer === 60) {
-            loadNextLevel();
-        }
-        function loadNextLevel() {
-            levelChangeTimer = 0;
-            levelCounter++;
-            if (levelCounter <  levelEnemyVelocityY.length) {
-                sprites = [];
-                scores = 0;
-                boring = 0;
-                enemy.vy = levelEnemyVelocityY[levelCounter];
-                gameState = PLAYING;
-            } else {
-                gameState = OVER;
-            }
-        }
-    }
-
 //Start here
     update();
 }(spriteObject, enemyObject, messageObject));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
