@@ -33,17 +33,18 @@
     var isTouched = false;
     var startTouch = false;
 
-    //new variables
-    var levelEnemyVelocity = [];
-    var levelCounter = 0;
-    var levelCounterDisplay=1;
-    var enemyVelocity1 = 1;
-    levelEnemyVelocity.push(enemyVelocity1);
-    var enemyVelocity2 = 2;
-    levelEnemyVelocity.push(enemyVelocity2);
-    var enemyVelocity3 = 3;
-    levelEnemyVelocity.push(enemyVelocity3);
+    //new variables for game difficulty raise
+    var levelOfDifficulty = [];
+    var level1 = 1;
+    levelOfDifficulty.push(level1);
+    var level2 = 2;
+    levelOfDifficulty.push(level2);
+    var level3 = 3;
+    levelOfDifficulty.push(level3);
+    var level4 = 4;
+    levelOfDifficulty.push(level4);
     var levelChangeTimer = 0;
+    var levelCounter = 1;
 
     var backgroundImage = new Image();
     backgroundImage.addEventListener('load', loadHandler, false);
@@ -109,6 +110,17 @@
     boringMetterMessage.visible = true;
     messages.push(boringMetterMessage);
 
+    //objcet for levelDisplay information
+    var levelDisplay = Object.create(messageObject);
+    levelDisplay.visible = true;
+    levelDisplay.font = 'normal bold 20px HVD_Peace';
+    levelDisplay.fillStyle = '#993030';
+    levelDisplay.text = returnLevelText();
+    levelDisplay.x = Math.floor(canvas.width * 0.92);
+    levelDisplay.y = Math.floor(canvas.height * 0.01);
+    messages.push(levelDisplay);
+
+
     var endGameMessage = Object.create(messageObject);
     endGameMessage.font = 'normal bold 120px Sickness';
     endGameMessage.fillStyle = '#FF2000';
@@ -120,10 +132,11 @@
     endGameMessage.visible = false;
     messages.push(endGameMessage);
 
+    //object for levelCompletion information
     var levelCompleteDisplay = Object.create(messageObject);
     levelCompleteDisplay.font = 'normal bold 40px Helvetica';
-    levelCompleteDisplay.fillStyle = '#ffffff';
-    levelCompleteDisplay.text = 'Congratulations! Level ' + levelCounterDisplay + ' completed.';
+    levelCompleteDisplay.fillStyle = '#c7ccc9';
+    levelCompleteDisplay.text = 'Congratulations! Level completed.';
     levelCompleteDisplay.x = Math.floor(canvas.width * 0.16);
     levelCompleteDisplay.y = Math.floor(canvas.height * 0.5);
     levelCompleteDisplay.visible = false;
@@ -340,7 +353,6 @@
         }
         if (scores === 10) {
             gameState = LEVEL_COMPLETE;
-            levelCounterDisplay+=1;
         }
     }
 
@@ -355,9 +367,8 @@
         function loadNextLevel() {
             levelCompleteDisplay.visible = false;
             levelChangeTimer = 0;
-            scores = 0;
-            if (levelCounter <  levelEnemyVelocity.length) {
-                levelCounter++;
+
+            if (levelCounter <= levelOfDifficulty.length) {
                 sprites = [];
                 assetsToLoad = [];
                 missiles = [];
@@ -365,6 +376,8 @@
                 messages = [];
                 assetsLoaded = 0;
                 enemyTimer = 0;
+                scores = 0;
+                scoreDisplay.text = returnScoreText();
                 sprites.push(background);
                 assetsToLoad.push(backgroundImage);
                 assetsToLoad.push(heroImage);
@@ -375,9 +388,12 @@
                 messages.push(boringMetterMessage);
                 messages.push(endGameMessage);
                 messages.push(levelCompleteDisplay);
-                velocity = levelEnemyVelocity[levelCounter];
+                messages.push(levelDisplay);
+                velocity = levelOfDifficulty[levelCounter];
+                enemyFrequency = 120 / levelOfDifficulty[levelCounter];
+                levelCounter++;
+                levelDisplay.text = 'Level: ' + levelCounter ;
                 gameState = PLAYING;
-                enemyFrequency = 120 / levelEnemyVelocity[levelCounter];
             } else {
                 gameState = OVER;
             }
@@ -507,6 +523,10 @@
 
     function returnLivesText() {
         return 'Lives: ' + hero.lives;
+    }
+
+    function returnLevelText() {
+        return 'Level: ' + levelCounter;
     }
 
     function escapeEnemy(enemy) {
