@@ -21,7 +21,7 @@
 
 body {
     margin: 0;
-    background: url('../images/background.jpg') center top no-repeat;
+    background: #01040d url('../images/background.jpg') center top no-repeat;
     background-size: cover;
 }
 
