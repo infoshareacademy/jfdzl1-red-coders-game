@@ -19,6 +19,38 @@
     src: url("../fonts/Howlinmad.ttf")
 }
 
+body {
+    margin: 0;
+    background: url('../images/background.jpg') center top no-repeat;
+    background-size: cover;
+}
+
+.top-header {
+    display: block;
+    position: relative;
+    height: 80px;
+}
+
+.logo {
+    float: left;
+}
+
+.logo img {
+    display: block;
+    height: 80px;
+    padding-left: 5px;
+}
+
+.music {
+    float: right;
+}
+
+.music img {
+    display: block;
+    height: 80px;
+    padding-right: 5px;
+}
+
 .container {
     width: -moz-fit-content;
     width: fit-content;
@@ -27,15 +59,32 @@
 
 .game_window {
     background: #000;
-    border: 3px solid #008000;
     width: -moz-fit-content;
     width: fit-content;
     height: -moz-fit-content;
     height: fit-content;
+    max-height: 640px;
+    -webkit-border-radius: 20px 20px 20px 20px;
+    border-radius: 20px 20px 20px 20px;
+    border: 20px solid #000;
 }
 
 .canvas {
     max-width: 100%;
+}
+
+.author {
+    padding-bottom: 15px;
+    text-align: center;
+    color: #aabac7;
+    font-family: 'Tahoma', sans-serif;
+    text-transform: uppercase;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.author img {
+    height: 25px;
 }
 
 button
@@ -76,14 +125,14 @@ button:active
     background: linear-gradient(top, #858565, #c5c9a9);
 }
 
-.screen-shake {
-    animation: screen-shake 0.5s;
-    -webkit-animation: screen-shake 0.5s;
+.shake-effect {
+    animation: shake 0.5s;
+    -webkit-animation: shake 0.5s;
     animation-iteration-count: 1;
     -webkit-animation-iteration-count: 1;
 }
 
-@keyframes screen-shake {
+@keyframes shake {
     0% { transform: translate(1px, 1px) rotate(0deg); }
     10% { transform: translate(-1px, -2px) rotate(-1deg); }
     20% { transform: translate(-3px, 0px) rotate(1deg); }

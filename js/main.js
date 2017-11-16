@@ -296,11 +296,11 @@
   }
 
   function shakeScreenStart () {
-    getCanvas.classList.add("screen-shake");
+    getCanvas.classList.add('shake-effect');
   }
 
   function shakeScreenStop () {
-    getCanvas.classList.remove("screen-shake");
+    getCanvas.classList.remove('shake-effect');
   }
 
   function checkIfHit() {
