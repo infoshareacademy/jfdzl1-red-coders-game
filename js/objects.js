@@ -105,20 +105,20 @@ infoCloudObject.update = function () {
 
     switch (this.state) {
         case this.NOT_SET:
-            this.firstAnimationFrame = 0;
-            this.lastAnimationFrame = 2;
+            this.firstAnimationFrame = 12;
+            this.lastAnimationFrame =12;
             break;
         case this.ENEMY_READ:
-            this.firstAnimationFrame = 3;
-            this.lastAnimationFrame = 5;
+            this.firstAnimationFrame = 0;
+            this.lastAnimationFrame = 3;
             break;
         case this.ENEMY_LISTENING:
             this.firstAnimationFrame = 6;
             this.lastAnimationFrame = 8;
             break;
         case this.ENEMY_PLAY:
-            this.firstAnimationFrame = 9;
-            this.lastAnimationFrame = 11;
+            this.firstAnimationFrame = 4;
+            this.lastAnimationFrame = 6;
             break;
         case this.HERO_LOSE_LIFE:
             this.firstAnimationFrame = 12;

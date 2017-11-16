@@ -49,9 +49,8 @@
 
     var infoCloudsImage = new Image();
     infoCloudsImage.addEventListener('load', loadHandler, false);
-    infoCloudsImage.src = './images/sprites_yanush.png';
+    infoCloudsImage.src = './images/sprites_clouds.png';
     assetsToLoad.push(infoCloudsImage);
-
 
     var background = Object.create(spriteObject);
     background.image = backgroundImage;
@@ -112,7 +111,6 @@
     endGameMessage.text = 'You lose';
     endGameMessage.visible = false;
     messages.push(endGameMessage);
-
 
     window.addEventListener('keydown', function (event) {
 
@@ -294,7 +292,7 @@
         }
         checkIfHit();
         checkMonsterTouchHero();
-
+        moveInfoClouds();
     }
 
     function endGame() {
@@ -308,7 +306,6 @@
                 var missile = missiles[j];
                 if (enemy.state === enemy.NORMAL && hitTestRectangle(missile, enemy)) {
                     // destroyEnemy(enemy);
-
                     escapeEnemy(enemy);
                     scores++;
                     removeObject(missile, missiles);
@@ -337,7 +334,28 @@
         }
     }
 
+    function moveInfoClouds() {
+      for (var i = 0; i < infoClouds.length; i++){
+          var infoCloud = infoClouds[i];
+          infoCloud.x = infoCloud.attachetTo.x;
+          infoCloud.y -= infoCloud.vy;
+          infoCloud.updateAnimation();
+        if (infoCloud.x < (0 - infoCloud.width) || infoCloud.x > (canvas.width + infoCloud.width)) {
+          removeObject(infoCloud, infoClouds);
+        }
+      }
+    }
+
     function render() {
+      function drawSprite(sprite) {
+        drawingSurface.drawImage(
+          sprite.image,
+          sprite.sourceX, sprite.sourceY,
+          sprite.sourceWidth, sprite.sourceHeight,
+          Math.floor(sprite.x), Math.floor(sprite.y),
+          sprite.width, sprite.height
+        );
+      }
         drawingSurface.clearRect(0, 0, canvas.width, canvas.height);
         if (sprites.length !== 0) {
             var sprite;
@@ -346,16 +364,6 @@
             for (var i = sprites.length - 1; i > 0; i--) {
                 sprite = sprites[i];
                 drawSprite(sprite);
-            }
-
-            function drawSprite(sprite) {
-                drawingSurface.drawImage(
-                    sprite.image,
-                    sprite.sourceX, sprite.sourceY,
-                    sprite.sourceWidth, sprite.sourceHeight,
-                    Math.floor(sprite.x), Math.floor(sprite.y),
-                    sprite.width, sprite.height
-                );
             }
         }
         if (messages.length !== 0) {
@@ -370,12 +378,16 @@
                 }
             }
         }
-
+        if (infoClouds.length !== 0) {
+          for (var i = 0; i < infoClouds.length; i++) {
+            var infoCloud = infoClouds[i];
+            drawSprite(infoCloud);
+          }
+        }
     }
 
     function fireMissile() {
-
-        if (missiles.length >= 3) {
+        if (missiles.length >= 6) {
             // return;
         }
         var missile = Object.create(spriteObject);
@@ -432,8 +444,23 @@
         enemies.push(enemy);
     }
 
-    function makeCloudInf(type) {
-        var infoCloud = new infoCloudObject;
+    function makeCloudInfOnEnemy(state, attachetTo) {
+        var infoCloud = Object.create(infoCloudObject);
+      infoCloud.state = state;
+      infoCloud.update();
+      infoCloud.attachetTo = attachetTo;
+      infoCloud.numberOffFrames = 4;
+      infoCloud.numberOffColumns = 6;
+      infoCloud.image = infoCloudsImage;
+      infoCloud.sourceWidth = 90;
+      infoCloud.sourceHeight = 81;
+      infoCloud.height = attachetTo.width;
+      infoCloud.width = attachetTo.width;
+      infoCloud.x = attachetTo.x;
+      infoCloud.y = attachetTo.y -  infoCloud.height ;
+      sprites.push(infoCloud);
+      infoClouds.push(infoCloud);
+
 
     }
 
@@ -457,6 +484,7 @@
             enemy.vx = -2;
         }
         enemy.update();
+        makeCloudInfOnEnemy(infoCloudObject.ENEMY_READ, enemy);
     }
 
     function destroyEnemy(enemy) {
