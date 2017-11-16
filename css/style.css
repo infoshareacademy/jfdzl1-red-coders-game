@@ -45,10 +45,20 @@ body {
     float: right;
 }
 
-.music img {
+#mute {
     display: block;
-    height: 80px;
-    padding-right: 5px;
+    width: 32px;
+    height: 32px;
+    padding-right: 30px;
+    padding-top: 15px;
+}
+
+#mute.music-on {
+    background: url('../images/music-on.png') center center no-repeat;
+}
+
+#mute.music-off {
+    background: url('../images/music-off.png') center center no-repeat;
 }
 
 .container {
@@ -123,6 +133,19 @@ button:active
     background: -webkit-linear-gradient(top, #858565, #c5c9a9);
     background: -moz-linear-gradient(top, #858565, #c5c9a9);
     background: linear-gradient(top, #858565, #c5c9a9);
+}
+
+.brightness-effect {
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+.brightness-effect:hover {
+    filter:brightness(150%);
+    -webkit-filter:brightness(150%);
 }
 
 .shake-effect {
