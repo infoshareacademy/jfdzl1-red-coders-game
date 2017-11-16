@@ -300,9 +300,9 @@
       for (var j = 0; j < missiles.length; j++) {
         var missile = missiles[j];
         if (enemy.state === enemy.NORMAL && hitTestRectangle(missile, enemy)) {
-          // destroyEnemy(enemy);
+          destroyEnemy(enemy);
 
-          escapeEnemy(enemy);
+          // escapeEnemy(enemy);
           scores++;
           removeObject(missile, missiles);
           removeObject(missile, sprites);
