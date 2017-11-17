@@ -69,8 +69,8 @@
   sprites.push(hero);
 
   var scoreDisplay = Object.create(messageObject);
-  scoreDisplay.font = 'normal bold 40px HVD_Peace';
-  scoreDisplay.fillStyle = '#008000';
+  scoreDisplay.font = 'normal bold 40px Howlinmad';
+  scoreDisplay.fillStyle = '#2ecc71';
   scoreDisplay.x = Math.floor(canvas.width * 0.02);
   scoreDisplay.y = Math.floor(canvas.height * 0.02);
   scoreDisplay.text =  returnScoreText();
@@ -78,8 +78,8 @@
   messages.push(scoreDisplay);
 
   var livesDisplay = Object.create(messageObject);
-  livesDisplay.font = 'normal bold 40px HVD_Peace';
-  livesDisplay.fillStyle = '#008000';
+  livesDisplay.font = 'normal bold 40px Howlinmad';
+  livesDisplay.fillStyle = '#d30019';
   livesDisplay.x = Math.floor(canvas.width * 0.3);
   livesDisplay.y = Math.floor(canvas.height * 0.02);
   livesDisplay.text =  returnLivesText();
@@ -87,8 +87,8 @@
   messages.push(livesDisplay);
 
   var boringMetterMessage = Object.create(messageObject);
-  boringMetterMessage.font = 'normal bold 40px HVD_Peace';
-  boringMetterMessage.fillStyle = '#15009A';
+  boringMetterMessage.font = 'normal bold 40px Howlinmad';
+  boringMetterMessage.fillStyle = '#225bd7';
   boringMetterMessage.x = Math.floor(canvas.width * 0.55);
   boringMetterMessage.y = Math.floor(canvas.height * 0.02);
   boringMetterMessage.text =  returnBoringText();
@@ -96,8 +96,8 @@
   messages.push(boringMetterMessage);
 
   var endGameMessage = Object.create(messageObject);
-  endGameMessage.font = 'normal bold 120px Sickness';
-  endGameMessage.fillStyle = '#FF2000';
+  endGameMessage.font = 'normal bold 140px Friday';
+  endGameMessage.fillStyle = '#c60019';
   endGameMessage.x = Math.floor(canvas.width / 2);
   endGameMessage.y = Math.floor(canvas.height / 2);
   endGameMessage.textAlign = 'center';
@@ -106,6 +106,7 @@
   endGameMessage.visible = false;
   messages.push(endGameMessage);
 
+  var getCanvas = document.querySelector('.canvas');
 
   window.addEventListener('keydown', function (event) {
 
@@ -294,15 +295,23 @@
     endGameMessage.visible = true;
   }
 
+  function shakeScreenStart () {
+    getCanvas.classList.add('shake-effect');
+  }
+
+  function shakeScreenStop () {
+    getCanvas.classList.remove('shake-effect');
+  }
+
   function checkIfHit() {
     for (var i = 0; i < enemies.length; i++) {
       var enemy = enemies[i];
       for (var j = 0; j < missiles.length; j++) {
         var missile = missiles[j];
         if (enemy.state === enemy.NORMAL && hitTestRectangle(missile, enemy)) {
-          // destroyEnemy(enemy);
+          destroyEnemy(enemy);
 
-          escapeEnemy(enemy);
+          // escapeEnemy(enemy);
           scores++;
           removeObject(missile, missiles);
           removeObject(missile, sprites);
@@ -326,6 +335,12 @@
         if (hero.lives === 0) {
           gameState = OVER;
         }
+
+        shakeScreenStart();
+
+        setTimeout(function() {
+          shakeScreenStop()
+        }, 500);
       }
     }
   }
