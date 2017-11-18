@@ -1,4 +1,4 @@
-(function (spriteObject, enemyObject, messageObject) {
+(function (spriteObject, enemyObject, messageObject, missileObject) {
   'use strict';
   var canvas = document.querySelector('canvas');
   var drawingSurface = canvas.getContext('2d');
@@ -7,6 +7,7 @@
   var missiles = [];
   var enemies = [];
   var messages = [];
+  var infoClouds = [];
   var assetsLoaded = 0;
   var enemyFrequency = 120;
   var enemyTimer = 0;
@@ -20,6 +21,8 @@
   var gameState = LOADING;
   var scores = 0;
   var boring = 0;
+  var scaleCalibration = 1.2;
+  var weaponMissilesType = missileObject.BOOK;
 
   //Directions
   var moveRight = false;
@@ -30,6 +33,7 @@
   var touchY = 0;
   var isTouched = false;
   var startTouch = false;
+  var changeWeapon =false;
 
   var backgroundImage = new Image();
   backgroundImage.addEventListener('load', loadHandler, false);
@@ -45,6 +49,16 @@
   enemyImg.addEventListener('load', loadHandler, false);
   enemyImg.src = './images/sprites_yanush.png';
   assetsToLoad.push(enemyImg);
+
+  var infoCloudsImage = new Image();
+  infoCloudsImage.addEventListener('load', loadHandler, false);
+  infoCloudsImage.src = './images/sprites_clouds.png';
+  assetsToLoad.push(infoCloudsImage);
+
+  var missileImage = new Image();
+  missileImage.addEventListener('load', loadHandler, false);
+  missileImage.src = './images/sprites_missiles.png';
+  assetsToLoad.push(missileImage);
 
   var background = Object.create(spriteObject);
   background.image = backgroundImage;
@@ -68,12 +82,20 @@
   hero.lives = START_LIVES;
   sprites.push(hero);
 
+  var missileSymbol = Object.create(missileObject);
+  missileSymbol.image = missileImage;
+  missileSymbol.state = weaponMissilesType;
+  missileSymbol.update();
+  missileSymbol.x = Math.floor(canvas.width * 0.015);
+  missileSymbol.y = Math.floor(canvas.height * 0.03);
+  sprites.push(missileSymbol);
+
   var scoreDisplay = Object.create(messageObject);
   scoreDisplay.font = 'normal bold 40px Howlinmad';
   scoreDisplay.fillStyle = '#2ecc71';
-  scoreDisplay.x = Math.floor(canvas.width * 0.02);
+  scoreDisplay.x = Math.floor(canvas.width * 0.07);
   scoreDisplay.y = Math.floor(canvas.height * 0.02);
-  scoreDisplay.text =  returnScoreText();
+  scoreDisplay.text = returnScoreText();
   scoreDisplay.visible = true;
   messages.push(scoreDisplay);
 
@@ -82,16 +104,16 @@
   livesDisplay.fillStyle = '#d30019';
   livesDisplay.x = Math.floor(canvas.width * 0.3);
   livesDisplay.y = Math.floor(canvas.height * 0.02);
-  livesDisplay.text =  returnLivesText();
+  livesDisplay.text = returnLivesText();
   livesDisplay.visible = true;
   messages.push(livesDisplay);
 
   var boringMetterMessage = Object.create(messageObject);
   boringMetterMessage.font = 'normal bold 40px Howlinmad';
-  boringMetterMessage.fillStyle = '#225bd7';
+  boringMetterMessage.fillStyle = '#14b2ff';
   boringMetterMessage.x = Math.floor(canvas.width * 0.55);
   boringMetterMessage.y = Math.floor(canvas.height * 0.02);
-  boringMetterMessage.text =  returnBoringText();
+  boringMetterMessage.text = returnBoringText();
   boringMetterMessage.visible = true;
   messages.push(boringMetterMessage);
 
@@ -102,7 +124,7 @@
   endGameMessage.y = Math.floor(canvas.height / 2);
   endGameMessage.textAlign = 'center';
   endGameMessage.textBaseline = 'middle';
-  endGameMessage.text =  'You lose';
+  endGameMessage.text = 'You lose';
   endGameMessage.visible = false;
   messages.push(endGameMessage);
 
@@ -142,6 +164,12 @@
       case  ' ':
         spaceKeyIsDown = false;
         event.preventDefault();
+        break;
+      case 'b':
+        changeWeapon = true;
+        event.preventDefault();
+        break;
+
     }
   }, false);
 
@@ -176,15 +204,13 @@
     event.preventDefault();
     touchX = event.targetTouches[0].pageX - canvas.offsetLeft;
     touchY = event.targetTouches[0].pageY - canvas.offsetTop;
-
-
     var displayedCanvas = $('.canvas');
-    var widthOnView =  displayedCanvas.width();
+    var widthOnView = displayedCanvas.width();
     var heightOnView = displayedCanvas.height();
     touchX = touchX * (canvas.width / widthOnView );
     touchY = touchY * (canvas.height / heightOnView);
     var offsetToMakeHeroBigger = hero.width;
-    if (touchTestRectangle(touchX, touchY, hero , offsetToMakeHeroBigger)) {
+    if (touchTestRectangle(touchX, touchY, hero, offsetToMakeHeroBigger)) {
       isTouched = true;
       startTouch = false;
     }
@@ -194,8 +220,18 @@
     startTouch = true;
   }
 
-  function touchEndFireHandler() {
-    if (startTouch) {
+  function touchEndFireHandler(event) {
+
+    touchX = event.targetTouches.pageX - canvas.offsetLeft;
+    touchY = event.targetTouches.pageY - canvas.offsetTop;
+    var displayedCanvas = $('.canvas');
+    var widthOnView = displayedCanvas.width();
+    var heightOnView = displayedCanvas.height();
+    touchX = touchX * (canvas.width / widthOnView );
+    touchY = touchY * (canvas.height / heightOnView);
+    if (touchTestRectangle(touchX, touchY, missileSymbol, missileSymbol.width)) {
+      changeWeapon = true;
+    } else if (startTouch) {
       startTouch = false;
       shoot = true;
     }
@@ -220,6 +256,17 @@
       shoot = false;
     }
 
+    if (changeWeapon) {
+      weaponMissilesType++;
+      if (weaponMissilesType > 3) {
+        weaponMissilesType = 0;
+      }
+      missileSymbol.state = weaponMissilesType;
+      missileSymbol.update();
+      missileSymbol.updateSourceImg();
+      changeWeapon = false;
+    }
+
     if (isTouched) {
       hero.x = touchX - (hero.halfWidth());
       isTouched = false;
@@ -229,12 +276,12 @@
 
     for (var i = 0; i < missiles.length; i++) {
       var missile = missiles[i];
-      var scale = missile.y / canvas.height;
-
+      var scale = missile.y / canvas.height * scaleCalibration;
       missile.y += missile.vy * scale;
       missile.width = missile.sourceWidth * scale;
       missile.height = missile.sourceHeight * scale;
       missile.x = -1 * (missile.vectorB() - missile.y) / missile.vectorA();
+      missile.updateAnimation();
 
       if (missile.y < canvas.height * 0.2) {
         removeObject(missile, missiles);
@@ -254,7 +301,7 @@
       var enemy = enemies[i];
 
       if (enemy.state === enemy.NORMAL) {
-        var scale = enemy.y / canvas.height;
+        var scale = (enemy.y / canvas.height) * scaleCalibration;
         enemy.y += enemy.vy * scale;
         enemy.x = -1 * (enemy.vectorB() - enemy.y) / enemy.vectorA();
         enemy.width = enemy.sourceWidth * scale;
@@ -275,31 +322,40 @@
         livesDisplay.text = returnLivesText();
         removeObject(enemy, enemies);
         removeObject(enemy, sprites);
+        i--;
       }
 
       if (enemy.state === enemy.ESCAPE) {
         enemy.x += enemy.vx;
+        var borderX = -1 * (enemy.vectorB() - enemy.y) / enemy.vectorA();
+        if (enemy.x < (borderX - enemy.width) && enemy.x < (canvas.width / 2)) {
+            enemy.sourceX++;
+            enemy.width--;
+          } else if (enemy.x > borderX && enemy.x > (canvas.width / 2)) {
+          enemy.width--;
+        }
         enemy.updateAnimation();
-        if (enemy.x < (0 - enemy.width) || enemy.x > (canvas.width + enemy.width)) {
+        if (enemy.width < 1 || enemy.x < (0 - enemy.width) || enemy.x > (canvas.width + enemy.width)) {
           removeObject(enemy, enemies);
           removeObject(enemy, sprites);
+          i--;
         }
       }
     }
     checkIfHit();
     checkMonsterTouchHero();
-
+    moveInfoClouds();
   }
 
   function endGame() {
     endGameMessage.visible = true;
   }
 
-  function shakeScreenStart () {
+  function shakeScreenStart() {
     getCanvas.classList.add('shake-effect');
   }
 
-  function shakeScreenStop () {
+  function shakeScreenStop() {
     getCanvas.classList.remove('shake-effect');
   }
 
@@ -309,9 +365,8 @@
       for (var j = 0; j < missiles.length; j++) {
         var missile = missiles[j];
         if (enemy.state === enemy.NORMAL && hitTestRectangle(missile, enemy)) {
-          destroyEnemy(enemy);
-
-          // escapeEnemy(enemy);
+          //destroyEnemy(enemy);
+          escapeEnemy(missile.state, enemy);
           scores++;
           removeObject(missile, missiles);
           removeObject(missile, sprites);
@@ -330,22 +385,43 @@
         hero.lives--;
         removeObject(enemy, enemies);
         removeObject(enemy, sprites);
-
         livesDisplay.text = LIVE_MESS + hero.lives;
         if (hero.lives === 0) {
           gameState = OVER;
         }
-
         shakeScreenStart();
-
-        setTimeout(function() {
+        setTimeout(function () {
           shakeScreenStop()
         }, 500);
       }
     }
   }
 
+  function moveInfoClouds() {
+    for (var i = 0; i < infoClouds.length; i++) {
+      var infoCloud = infoClouds[i];
+      infoCloud.x = infoCloud.attachetTo.x;
+      infoCloud.y -= infoCloud.vy;
+      infoCloud.width = infoCloud.attachetTo.width ;
+      infoCloud.updateAnimation();
+      if (infoCloud.width < 1 || infoCloud.x < (0 - infoCloud.width) || infoCloud.x > (canvas.width + infoCloud.width)) {
+        removeObject(infoCloud, infoClouds);
+        i--;
+      }
+    }
+  }
+
   function render() {
+    function drawSprite(sprite) {
+      drawingSurface.drawImage(
+        sprite.image,
+        sprite.sourceX, sprite.sourceY,
+        sprite.sourceWidth, sprite.sourceHeight,
+        Math.floor(sprite.x), Math.floor(sprite.y),
+        sprite.width, sprite.height
+      );
+    }
+
     drawingSurface.clearRect(0, 0, canvas.width, canvas.height);
     if (sprites.length !== 0) {
       var sprite;
@@ -354,16 +430,6 @@
       for (var i = sprites.length - 1; i > 0; i--) {
         sprite = sprites[i];
         drawSprite(sprite);
-      }
-
-      function drawSprite(sprite) {
-        drawingSurface.drawImage(
-          sprite.image,
-          sprite.sourceX, sprite.sourceY,
-          sprite.sourceWidth, sprite.sourceHeight,
-          Math.floor(sprite.x), Math.floor(sprite.y),
-          sprite.width, sprite.height
-        );
       }
     }
     if (messages.length !== 0) {
@@ -378,28 +444,28 @@
         }
       }
     }
-
+    if (infoClouds.length !== 0) {
+      for (var i = 0; i < infoClouds.length; i++) {
+        var infoCloud = infoClouds[i];
+        drawSprite(infoCloud);
+      }
+    }
   }
 
   function fireMissile() {
-
-    if (missiles.length >= 3) {
+    if (missiles.length >= 6) {
       // return;
     }
-    var missile = Object.create(spriteObject);
-    missile.image = backgroundImage;
-    missile.sourceX = 194;
-    missile.sourceY = 0;
-    missile.sourceWidth = 32;
-    missile.sourceHeight = 32;
-    missile.width = 32;
-    missile.height = 32;
+    var missile = Object.create(missileObject);
+    missile.image = missileImage;
+    missile.state = weaponMissilesType;
     missile.x = hero.centerX() + missile.width;
     missile.y = canvas.height - (hero.height - 2 * missile.height);
     missile.startPointX = canvas.width / 2;
     missile.vy = -8;
     missile.endPointX = missile.x;
     missile.endPointY = missile.y;
+    missile.update();
     sprites.push(missile);
     missiles.push(missile);
   }
@@ -419,7 +485,7 @@
     enemy.image = enemyImg;
     enemy.sourceX = 0;
     enemy.y = 0.2 * canvas.height; //0 - enemy.height;
-    enemy.vy = 1;
+    enemy.vy = 2;
     var randomPosition = Math.floor(Math.random() * canvas.width / enemy.width);
     enemy.startPointX = canvas.width / 2;
     enemy.x = enemy.startPointX;
@@ -440,6 +506,26 @@
     enemies.push(enemy);
   }
 
+  function makeCloudInfOnEnemy(state, attachetTo) {
+    var infoCloud = Object.create(infoCloudObject);
+    infoCloud.state = state;
+    infoCloud.update();
+    infoCloud.attachetTo = attachetTo;
+    infoCloud.numberOffFrames = 4;
+    infoCloud.numberOffColumns = 6;
+    infoCloud.image = infoCloudsImage;
+    infoCloud.sourceWidth = 90;
+    infoCloud.sourceHeight = 81;
+    infoCloud.height = attachetTo.width;
+    infoCloud.width = attachetTo.width;
+    infoCloud.x = attachetTo.x;
+    infoCloud.y = attachetTo.y - infoCloud.height;
+    //sprites.push(infoCloud);
+    infoClouds.push(infoCloud);
+
+
+  }
+
   function returnBoringText() {
     return 'Boring: ' + '☹'.repeat(boring);
   }
@@ -452,14 +538,17 @@
     return 'Lives: ' + hero.lives;
   }
 
-  function escapeEnemy(enemy) {
+  function escapeEnemy(state, enemy) {
     enemy.state = enemy.ESCAPE;
     if (enemy.x >= background.halfWidth()) {
       enemy.vx = 2;
+      enemy.endPointX = canvas.width * 1.5;
     } else {
       enemy.vx = -2;
+      enemy.endPointX = canvas.width * -0.5;
     }
     enemy.update();
+    makeCloudInfOnEnemy(state, enemy);
   }
 
   function destroyEnemy(enemy) {
@@ -475,4 +564,4 @@
 
 //Start here
   update();
-}(spriteObject, enemyObject, messageObject));
+}(spriteObject, enemyObject, messageObject, missileObject));

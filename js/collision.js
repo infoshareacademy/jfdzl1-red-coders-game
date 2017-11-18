@@ -4,6 +4,7 @@ function hitTestRectangle(r1, r2)
 {
     //A variable to determine whether there's a collision
     var hit = false;
+    var colisionFactor = 0.7;
 
     //Calculate the distance vector
     var vx = r1.centerX() - r2.centerX();
@@ -11,7 +12,10 @@ function hitTestRectangle(r1, r2)
 
     //Figure out the combined half-widths and half-heights
     var combinedHalfWidths = r1.halfWidth() + r2.halfWidth();
+    combinedHalfHeights *= colisionFactor;
+
     var combinedHalfHeights = r1.halfHeight() + r2.halfHeight();
+    combinedHalfHeights *= colisionFactor;
 
     //Check for a collision on the x axis
     if(Math.abs(vx) < combinedHalfWidths)

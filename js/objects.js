@@ -92,4 +92,101 @@ var messageObject =
     textAlign: 'left'
   };
 
+var infoCloudObject = Object.create(spriteObject);
+infoCloudObject.NOT_SET = -1;
+infoCloudObject.ENEMY_READ = 0;
+infoCloudObject.ENEMY_LISTENING = 1;
+infoCloudObject.ENEMY_PLAY = 2;
+infoCloudObject.ENEMY_WATCH_FILM = 3;
+infoCloudObject.HERO_LOSE_LIFE = 4;
+infoCloudObject.HERO_GET_MORE_BORING = 5;
+infoCloudObject.HERO_GET_LESS_BORING = 6;
+infoCloudObject.state = infoCloudObject.NOT_SET;
+infoCloudObject.update = function () {
+
+    switch (this.state) {
+        case this.NOT_SET:
+            this.currentFrame= 12;
+            this.firstAnimationFrame = 12;
+            this.lastAnimationFrame =12;
+            break;
+        case this.ENEMY_READ:
+            this.currentFrame = 0;
+            this.firstAnimationFrame = 0;
+            this.lastAnimationFrame = 3;
+            break;
+        case this.ENEMY_LISTENING:
+            this.currentFrame = 4;
+            this.firstAnimationFrame = 4;
+            this.lastAnimationFrame = 7;
+            break;
+        case this.ENEMY_PLAY:
+            this.currentFrame = 8;
+            this.firstAnimationFrame = 8;
+            this.lastAnimationFrame = 11;
+            break;
+        case this.ENEMY_WATCH_FILM:
+          this.currentFrame = 12;
+          this.firstAnimationFrame = 12;
+          this.lastAnimationFrame = 14;
+          break;
+        case this.HERO_LOSE_LIFE:
+            this.firstAnimationFrame = 15;
+            this.lastAnimationFrame = 18;
+            this.vy = -2;
+            break;
+        case this.HERO_GET_MORE_BORING:
+            this.firstAnimationFrame = 19;
+            this.lastAnimationFrame = 22;
+            this.vy = -2;
+            break;
+        case this.HERO_GET_LESS_BORING:
+            this.firstAnimationFrame = 18;
+            this.lastAnimationFrame = 20;
+            this.vy = -2;
+            break;
+    }
+    this.updateSourceImg();
+};
+
+var missileObject = Object.create(spriteObject);
+
+missileObject.BOOK = 0;
+missileObject.CD = 1;
+missileObject.GAMEPAD = 2;
+missileObject.TICKETS = 3;
+//missileObject.sourceX = 194;
+missileObject.sourceWidth = 32;
+missileObject.sourceHeight = 32;
+missileObject.width = 32;
+missileObject.height = 32;
+
+
+missileObject.update = function () {
+  switch (this.state) {
+    case this.BOOK:
+      this.currentFrame = 0;
+      this.firstAnimationFrame = 0;
+      this.lastAnimationFrame = 3;
+      break;
+    case this.CD:
+      this.currentFrame = 4;
+      this.firstAnimationFrame = 4;
+      this.lastAnimationFrame = 7;
+      break;
+    case this.GAMEPAD:
+      this.currentFrame = 8;
+      this.firstAnimationFrame = 8;
+      this.lastAnimationFrame = 11;
+      break;
+    case this.TICKETS:
+      this.currentFrame = 12;
+      this.firstAnimationFrame = 12;
+      this.lastAnimationFrame = 15;
+      break;
+  }
+  this.updateSourceImg();
+};
+
+
 
