@@ -25,20 +25,16 @@
     var boring = 0;
     var scaleCalibration = 1.2;
     var weaponMissilesType = missileObject.BOOK;
+    var numberKillsToWinLevel = 10;
 
     //new variables for game difficulty raise
     var levelOfDifficulty = [];
-    var level1 = 1;
-    levelOfDifficulty.push(level1);
-    var level2 = 2;
-    levelOfDifficulty.push(level2);
-    var level3 = 3;
-    levelOfDifficulty.push(level3);
-    var level4 = 4;
-    levelOfDifficulty.push(level4);
+
+    for (var j = 0; j < 5; j++) {
+        levelOfDifficulty.push(j+1);
+    }
     var levelChangeTimer = 0;
     var levelCounter = 1;
-
 
     //Directions
     var moveRight = false;
@@ -127,7 +123,7 @@
     var boringMetterMessage = Object.create(messageObject);
     boringMetterMessage.font = 'normal bold 40px Howlinmad';
     boringMetterMessage.fillStyle = '#14b2ff';
-    boringMetterMessage.x = Math.floor(canvas.width * 0.55);
+    boringMetterMessage.x = Math.floor(canvas.width * 0.5);
     boringMetterMessage.y = Math.floor(canvas.height * 0.02);
     boringMetterMessage.text = returnBoringText();
     boringMetterMessage.visible = true;
@@ -135,7 +131,7 @@
 
     var levelDisplay = Object.create(messageObject);
     levelDisplay.visible = true;
-    levelDisplay.font = 'normal bold 20px HVD_Peace';
+    levelDisplay.font = 'normal bold 20px Howlinmad';
     levelDisplay.fillStyle = '#993030';
     levelDisplay.text = returnLevelText();
     levelDisplay.x = Math.floor(canvas.width * 0.92);
@@ -218,6 +214,9 @@
                 break;
             case PLAYING:
                 playGame();
+                break;
+            case LEVEL_COMPLETE:
+                levelComplete();
                 break;
             case OVER:
                 endGame();
@@ -405,12 +404,13 @@
                     removeObject(missile, sprites);
                     j--;
                     scoreDisplay.text = SCORE_MESS + scores;
+                    if (scores >= numberKillsToWinLevel) {
+                        gameState = LEVEL_COMPLETE;
+                    }
                 }
             }
         }
-        if (scores === 10) {
-            gameState = LEVEL_COMPLETE;
-        }
+
     }
 
     function levelComplete() {
@@ -424,36 +424,34 @@
         function loadNextLevel() {
             levelCompleteDisplay.visible = false;
             levelChangeTimer = 0;
-
-            if (levelCounter <= levelOfDifficulty.length) {
-                sprites = [];
-                assetsToLoad = [];
-                missiles = [];
-                enemies = [];
-                messages = [];
-                assetsLoaded = 0;
-                enemyTimer = 0;
-                scores = 0;
-                scoreDisplay.text = returnScoreText();
-                sprites.push(background);
-                assetsToLoad.push(backgroundImage);
-                assetsToLoad.push(heroImage);
-                assetsToLoad.push(enemyImg);
-                sprites.push(hero);
-                messages.push(scoreDisplay);
-                messages.push(livesDisplay);
-                messages.push(boringMetterMessage);
-                messages.push(endGameMessage);
-                messages.push(levelCompleteDisplay);
-                messages.push(levelDisplay);
+            levelCounter++;
+            levelDisplay.text = returnLevelText();
+            sprites = [];
+            assetsToLoad = [];
+            missiles = [];
+            enemies = [];
+            messages = [];
+            enemyTimer = 0;
+            scores = 0;
+            infoClouds = [];
+            scoreDisplay.text = returnScoreText();
+            sprites.push(background);
+            sprites.push(hero);
+            sprites.push(missileSymbol);
+            messages.push(scoreDisplay);
+            messages.push(livesDisplay);
+            messages.push(boringMetterMessage);
+            messages.push(endGameMessage);
+            messages.push(levelCompleteDisplay);
+            messages.push(levelDisplay);
+            if (levelCounter <= levelOfDifficulty.length -1 ) {
+                numberKillsToWinLevel = levelCounter * 10;
                 velocity = levelOfDifficulty[levelCounter];
                 enemyFrequency = 120 / levelOfDifficulty[levelCounter];
-                levelCounter++;
-                levelDisplay.text = 'Level: ' + levelCounter;
-                gameState = PLAYING;
             } else {
-                gameState = OVER;
+                //gameState = OVER;
             }
+            gameState = PLAYING;
         }
     }
 
@@ -534,8 +532,8 @@
     }
 
     function fireMissile() {
-        if (missiles.length >= 6) {
-            // return;
+        if (missiles.length >= 5) {
+             return;
         }
         var missile = Object.create(missileObject);
         missile.image = missileImage;
@@ -601,10 +599,7 @@
         infoCloud.width = attachetTo.width;
         infoCloud.x = attachetTo.x;
         infoCloud.y = attachetTo.y - infoCloud.height;
-        //sprites.push(infoCloud);
         infoClouds.push(infoCloud);
-
-
     }
 
     function returnBoringText() {
@@ -620,7 +615,7 @@
     }
 
     function returnLevelText() {
-        return 'Level: ' + levelCounter;
+        return 'Lvl: ' + levelCounter;
     }
 
 
