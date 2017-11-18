@@ -47,15 +47,17 @@ body {
 
 .help {
     float: right;
-    display: inline-block;
+    display: block;
     width: 32px;
     height: 32px;
     padding-right: 30px;
     padding-top: 15px;
-    background-image: url("../images/question.png");
-    background-size: contain;
-    background-repeat: no-repeat;
     }
+
+.img-help {
+    max-width: 100%;
+}
+
 
 #mute {
     display: block;
