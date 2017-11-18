@@ -1,6 +1,6 @@
 var spriteObject =
     {
-        image: '',
+        image: "",
         sourceX: 0,
         sourceY: 0,
         sourceWidth: 80,
@@ -38,11 +38,11 @@ var spriteObject =
             return this.height / 2;
         },
         vectorA: function () {
-          var diferrOnX = this.startPointX - this.endPointX;
-          if (diferrOnX === 0 ) {
-            diferrOnX = 0.1;
-          }
-            return (this.endPointY - this.startPointY) / (diferrOnX) * -1;
+            var differOnX = this.startPointX - this.endPointX;
+            if (differOnX === 0) {
+                differOnX = 0.1;
+            }
+            return (this.endPointY - this.startPointY) / differOnX * -1;
         },
         vectorB: function () {
             return this.endPointY - (this.vectorA() * this.endPointX);
@@ -187,6 +187,5 @@ missileObject.update = function () {
   }
   this.updateSourceImg();
 };
-
 
 
