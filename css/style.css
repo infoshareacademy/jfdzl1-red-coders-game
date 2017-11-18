@@ -45,6 +45,18 @@ body {
     float: right;
 }
 
+.help {
+    float: right;
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    padding-right: 30px;
+    padding-top: 15px;
+    background-image: url("../images/question.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    }
+
 #mute {
     display: block;
     width: 32px;
