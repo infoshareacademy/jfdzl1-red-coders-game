@@ -1,20 +1,170 @@
 
+@font-face {
+    font-family: HVD_Peace;
+    src: url("../fonts/HVD_Peace.ttf");
+}
+
+@font-face {
+    font-family: Sickness;
+    src: url("../fonts/Sickness.ttf")
+}
+
+@font-face {
+    font-family: Friday;
+    src: url("../fonts/Friday.ttf")
+}
+
+@font-face {
+    font-family: Howlinmad;
+    src: url("../fonts/Howlinmad.ttf")
+}
+
+body {
+    margin: 0;
+    background: #01040d url('../images/background.jpg') center top no-repeat;
+    background-size: cover;
+}
+
+.top-header {
+    display: block;
+    position: relative;
+    height: 80px;
+}
+
+.logo {
+    float: left;
+}
+
+.logo img {
+    display: block;
+    height: 80px;
+    padding-left: 5px;
+}
+
+.music {
+    float: right;
+}
+
+#mute {
+    display: block;
+    width: 32px;
+    height: 32px;
+    padding-right: 30px;
+    padding-top: 15px;
+}
+
+#mute.music-on {
+    background: url('../images/music-on.png') center center no-repeat;
+}
+
+#mute.music-off {
+    background: url('../images/music-off.png') center center no-repeat;
+}
+
 .container {
+    width: -moz-fit-content;
     width: fit-content;
     margin: auto;
 }
 
 .game_window {
-    border: 3px solid green;
+    background: #000;
+    width: -moz-fit-content;
     width: fit-content;
+    height: -moz-fit-content;
     height: fit-content;
+    max-height: 640px;
+    -webkit-border-radius: 20px 20px 20px 20px;
+    border-radius: 20px 20px 20px 20px;
+    border: 20px solid #000;
 }
 
 .canvas {
     max-width: 100%;
 }
 
-.game_status {
-    border: 3px solid green;
-    width: auto;
+.author {
+    padding-bottom: 15px;
+    text-align: center;
+    color: #aabac7;
+    font-family: 'Tahoma', sans-serif;
+    text-transform: uppercase;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.author img {
+    height: 25px;
+}
+
+button
+{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    color: #fff;
+    padding: 10px 20px;
+    border: 2px solid #000;
+    cursor: none;
+
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+
+    background:-webkit-linear-gradient(top, #a3a3a3, #000);
+    background:-moz-linear-gradient(top, #a3a3a3, #000);
+    background: linear-gradient(top, #a3a3a3, #000);
+
+    -webkit-box-shadow: 5px 5px 3px rgba(0,0,0,0.5);
+    -moz-box-shadow: 5px 5px 3px rgba(0,0,0,0.5);
+    box-shadow: 5px 5px 3px rgba(0,0,0,0.5);
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+
+    position: absolute;
+    left: 500;
+    top: 50;
+
+}
+
+button:active
+{
+    background: -webkit-linear-gradient(top, #858565, #c5c9a9);
+    background: -moz-linear-gradient(top, #858565, #c5c9a9);
+    background: linear-gradient(top, #858565, #c5c9a9);
+}
+
+.brightness-effect {
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+.brightness-effect:hover {
+    filter:brightness(150%);
+    -webkit-filter:brightness(150%);
+}
+
+.shake-effect {
+    animation: shake 0.5s;
+    -webkit-animation: shake 0.5s;
+    animation-iteration-count: 1;
+    -webkit-animation-iteration-count: 1;
+}
+
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
 }
