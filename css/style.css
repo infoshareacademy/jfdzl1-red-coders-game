@@ -59,9 +59,12 @@ body {
 
 .popuptext {
     position: fixed;
-    top: 50%;
-    left: 20%;
+    top: 30%;
+    left: 30%;
+    height:auto;
+    font-family: Friday;
     background-color: white;
+    opacity: 0.5;
     text-align: center;
     border-radius: 6px;
     padding: 8px 0;
