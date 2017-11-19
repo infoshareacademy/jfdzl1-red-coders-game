@@ -58,6 +58,18 @@ body {
     max-width: 100%;
 }
 
+.popuptext {
+    position: absolute; //??
+    top: 50%;
+    left: 20%;
+    background-color: white;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 0;
+    z-index: 1;
+}
+
+
 
 #mute {
     display: block;
