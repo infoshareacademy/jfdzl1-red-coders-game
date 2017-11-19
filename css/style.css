@@ -148,7 +148,7 @@ button:active
     -webkit-filter:brightness(150%);
 }
 
-.shake-effect {
+.shake-effect, .hit-effect1 {
     animation: shake 0.5s;
     -webkit-animation: shake 0.5s;
     animation-iteration-count: 1;
@@ -167,4 +167,88 @@ button:active
     80% { transform: translate(-1px, -1px) rotate(1deg); }
     90% { transform: translate(1px, 2px) rotate(0deg); }
     100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+.hit-effect2 {
+    animation: hit-effect2 0.5s;
+    -webkit-animation: hit-effect2 0.5s;
+    animation-iteration-count: 1;
+    -webkit-animation-iteration-count: 1;
+}
+
+@keyframes hit-effect2 {
+    0% { filter:blur(0px);  -webkit-filter:blur(0px); transform: translate(1px, 1px) rotate(0deg); }
+    10% { filter:blur(1px);  -webkit-filter:blur(1px); transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { filter:blur(2px);  -webkit-filter:blur(2px); transform: translate(-3px, 0px) rotate(1deg); }
+    30% { filter:blur(3px);  -webkit-filter:blur(3px); transform: translate(3px, 2px) rotate(0deg); }
+    40% { filter:blur(4px);  -webkit-filter:blur(4px); transform: translate(1px, -1px) rotate(1deg); }
+    50% { filter:blur(5px);  -webkit-filter:blur(5px); transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { filter:blur(4px);  -webkit-filter:blur(4px); transform: translate(-3px, 1px) rotate(0deg); }
+    70% { filter:blur(3px);  -webkit-filter:blur(3px); transform: translate(3px, 1px) rotate(-1deg); }
+    80% { filter:blur(2px);  -webkit-filter:blur(2px); transform: translate(-1px, -1px) rotate(1deg); }
+    90% { filter:blur(1px);  -webkit-filter:blur(1px); transform: translate(1px, 2px) rotate(0deg); }
+    100% { filter:blur(0px);  -webkit-filter:blur(0px); transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+.hit-effect3 {
+    animation: hit-effect3 0.75s;
+    -webkit-animation: hit-effect3 0.75s;
+    animation-iteration-count: 1;
+    -webkit-animation-iteration-count: 1;
+}
+
+@keyframes hit-effect3 {
+    0% { filter:blur(0px) brightness(150%);  -webkit-filter:blur(0px) brightness(150%); transform: translate(2px, 2px) rotate(0deg); }
+    10% { filter:blur(1px) brightness(150%);  -webkit-filter:blur(1px) brightness(150%); transform: translate(-2px, -3px) rotate(-2deg); }
+    20% { filter:blur(2px) brightness(150%);  -webkit-filter:blur(2px) brightness(150%); transform: translate(-4px, 1px) rotate(2deg); }
+    30% { filter:blur(3px) brightness(150%);  -webkit-filter:blur(3px) brightness(150%); transform: translate(4px, 3px) rotate(1deg); }
+    40% { filter:blur(4px) brightness(150%);  -webkit-filter:blur(4px) brightness(150%); transform: translate(2px, -2px) rotate(2deg); }
+    50% { filter:blur(5px) brightness(150%);  -webkit-filter:blur(5px) brightness(150%); transform: translate(-2px, 3px) rotate(-2deg); }
+    60% { filter:blur(4px) brightness(150%);  -webkit-filter:blur(4px) brightness(150%); transform: translate(-4px, 2px) rotate(1deg); }
+    70% { filter:blur(3px) brightness(150%);  -webkit-filter:blur(3px) brightness(150%); transform: translate(4px, 2px) rotate(-2deg); }
+    80% { filter:blur(2px) brightness(150%);  -webkit-filter:blur(2px) brightness(150%); transform: translate(-2px, -2px) rotate(2deg); }
+    90% { filter:blur(1px) brightness(150%);  -webkit-filter:blur(1px) brightness(150%); transform: translate(2px, 3px) rotate(1deg); }
+    100% { filter:blur(0px) brightness(150%);  -webkit-filter:blur(0px) brightness(150%); transform: translate(2px, -3px) rotate(-2deg); }
+}
+
+.hit-effect4 {
+    animation: hit-effect4 0.75s;
+    -webkit-animation: hit-effect4 0.75s;
+    animation-iteration-count: 1;
+    -webkit-animation-iteration-count: 1;
+}
+
+@keyframes hit-effect4 {
+    0% { filter:blur(0px) contrast(125%) brightness(150%);  -webkit-filter:blur(0px) contrast(125%) brightness(150%); transform: translate(2px, 2px) rotate(0deg); }
+    10% { filter:blur(1px) contrast(125%) brightness(150%);  -webkit-filter:blur(1px) contrast(125%) brightness(150%); transform: translate(-2px, -3px) rotate(-2deg); }
+    20% { filter:blur(2px) contrast(125%) brightness(150%);  -webkit-filter:blur(2px) contrast(125%) brightness(150%); transform: translate(-4px, 1px) rotate(2deg); }
+    30% { filter:blur(3px) contrast(125%) brightness(150%);  -webkit-filter:blur(3px) contrast(125%) brightness(150%); transform: translate(4px, 3px) rotate(1deg); }
+    40% { filter:blur(4px) contrast(125%) brightness(150%);  -webkit-filter:blur(4px) contrast(125%) brightness(150%); transform: translate(2px, -2px) rotate(2deg); }
+    50% { filter:blur(5px) contrast(125%) brightness(150%);  -webkit-filter:blur(5px) contrast(125%) brightness(150%); transform: translate(-2px, 3px) rotate(-2deg); }
+    60% { filter:blur(4px) contrast(125%) brightness(150%);  -webkit-filter:blur(4px) contrast(125%) brightness(150%); transform: translate(-4px, 2px) rotate(1deg); }
+    70% { filter:blur(3px) contrast(125%) brightness(150%);  -webkit-filter:blur(3px) contrast(125%) brightness(150%); transform: translate(4px, 2px) rotate(-2deg); }
+    80% { filter:blur(2px) contrast(125%) brightness(150%);  -webkit-filter:blur(2px) contrast(125%) brightness(150%); transform: translate(-2px, -2px) rotate(2deg); }
+    90% { filter:blur(1px) contrast(125%) brightness(150%);  -webkit-filter:blur(1px) contrast(125%) brightness(150%); transform: translate(2px, 3px) rotate(1deg); }
+    100% { filter:blur(0px) contrast(125%) brightness(150%);  -webkit-filter:blur(0px) contrast(125%) brightness(150%); transform: translate(2px, -3px) rotate(-2deg); }
+}
+
+.hit-effect5 {
+    animation: hit-effect5 1s;
+    -webkit-animation: hit-effect4 1s;
+    animation-iteration-count: 1;
+    -webkit-animation-iteration-count: 1;
+}
+
+@keyframes hit-effect5 {
+    0% { filter:blur(0px) contrast(125%) brightness(200%);  -webkit-filter:blur(0px) contrast(125%) brightness(200%); transform: translate(2px, 2px) rotate(0deg); }
+    10% { filter:blur(1px) contrast(125%) brightness(200%);  -webkit-filter:blur(1px) contrast(125%) brightness(200%); transform: translate(-2px, -3px) rotate(-2deg); }
+    20% { filter:blur(2px) contrast(125%) brightness(200%);  -webkit-filter:blur(2px) contrast(125%) brightness(200%); transform: translate(-4px, 1px) rotate(2deg); }
+    30% { filter:blur(3px) contrast(125%) brightness(200%);  -webkit-filter:blur(3px) contrast(125%) brightness(200%); transform: translate(4px, 3px) rotate(1deg); }
+    40% { filter:blur(4px) contrast(125%) brightness(200%);  -webkit-filter:blur(4px) contrast(125%) brightness(200%); transform: translate(2px, -2px) rotate(2deg); }
+    50% { filter:blur(5px) contrast(125%) brightness(200%);  -webkit-filter:blur(5px) contrast(125%) brightness(200%); transform: translate(-2px, 3px) rotate(-2deg); }
+    60% { filter:blur(4px) contrast(125%) brightness(200%);  -webkit-filter:blur(4px) contrast(125%) brightness(200%); transform: translate(-4px, 2px) rotate(1deg); }
+    70% { filter:blur(3px) contrast(125%) brightness(200%);  -webkit-filter:blur(3px) contrast(125%) brightness(200%); transform: translate(4px, 2px) rotate(-2deg); }
+    80% { filter:blur(2px) contrast(125%) brightness(200%);  -webkit-filter:blur(2px) contrast(125%) brightness(200%); transform: translate(-2px, -2px) rotate(2deg); }
+    90% { filter:blur(1px) contrast(125%) brightness(200%);  -webkit-filter:blur(1px) contrast(125%) brightness(200%); transform: translate(2px, 3px) rotate(1deg); }
+    100% { filter:blur(0px) contrast(125%) brightness(200%);  -webkit-filter:blur(0px) contrast(125%) brightness(200%); transform: translate(2px, -3px) rotate(-2deg); }
 }
