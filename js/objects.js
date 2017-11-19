@@ -1,6 +1,6 @@
 var spriteObject =
     {
-        image: '',
+        image: "",
         sourceX: 0,
         sourceY: 0,
         sourceWidth: 80,
@@ -38,11 +38,11 @@ var spriteObject =
             return this.height / 2;
         },
         vectorA: function () {
-          var diferrOnX = this.startPointX - this.endPointX;
-          if (diferrOnX === 0 ) {
-            diferrOnX = 0.1;
-          }
-            return (this.endPointY - this.startPointY) / (diferrOnX) * -1;
+            var differOnX = this.startPointX - this.endPointX;
+            if (differOnX === 0) {
+                differOnX = 0.1;
+            }
+            return (this.endPointY - this.startPointY) / differOnX * -1;
         },
         vectorB: function () {
             return this.endPointY - (this.vectorA() * this.endPointX);
@@ -113,22 +113,32 @@ infoCloudObject.update = function () {
         case this.ENEMY_READ:
             this.currentFrame = 0;
             this.firstAnimationFrame = 0;
-            this.lastAnimationFrame = 3;
+            // this.lastAnimationFrame = 3;
+            this.lastAnimationFrame = 0;
             break;
         case this.ENEMY_LISTENING:
-            this.currentFrame = 4;
-            this.firstAnimationFrame = 4;
-            this.lastAnimationFrame = 7;
+            // this.currentFrame = 4;
+            // this.firstAnimationFrame = 4;
+            // this.lastAnimationFrame = 7;
+            this.currentFrame = 1;
+            this.firstAnimationFrame = 1;
+            this.lastAnimationFrame = 1;
             break;
         case this.ENEMY_PLAY:
-            this.currentFrame = 8;
-            this.firstAnimationFrame = 8;
-            this.lastAnimationFrame = 11;
+            // this.currentFrame = 8;
+            // this.firstAnimationFrame = 8;
+            // this.lastAnimationFrame = 11;
+            this.currentFrame = 2;
+            this.firstAnimationFrame = 2;
+            this.lastAnimationFrame = 2;
             break;
         case this.ENEMY_WATCH_FILM:
-          this.currentFrame = 12;
-          this.firstAnimationFrame = 12;
-          this.lastAnimationFrame = 14;
+          // this.currentFrame = 12;
+          // this.firstAnimationFrame = 12;
+          // this.lastAnimationFrame = 14;
+          this.currentFrame = 3;
+          this.firstAnimationFrame = 3;
+          this.lastAnimationFrame = 3;
           break;
         case this.HERO_LOSE_LIFE:
             this.firstAnimationFrame = 15;
@@ -187,6 +197,5 @@ missileObject.update = function () {
   }
   this.updateSourceImg();
 };
-
 
 
