@@ -36,6 +36,9 @@
     var levelChangeTimer = 0;
     var levelCounter = 1;
 
+    var numberOfCurrentLevel = 0;
+    var numberOfLevels = 5;
+
     //Directions
     var moveRight = false;
     var moveLeft = false;
@@ -49,13 +52,18 @@
 
     var backgroundImage = new Image();
     backgroundImage.addEventListener('load', loadHandler, false);
-    backgroundImage.src = './images/tiles.png';
+    backgroundImage.src = './images/tiles.jpg';
     assetsToLoad.push(backgroundImage);
 
     var heroImage = new Image();
     heroImage.addEventListener('load', loadHandler, false);
     heroImage.src = './images/sprites_player.png';
     assetsToLoad.push(heroImage);
+
+    var heroImageHurted = new Image();
+    heroImageHurted.addEventListener('load', loadHandler, false);
+    heroImageHurted.src = './images/sprites_player_hurted.png';
+    assetsToLoad.push(heroImageHurted);
 
     var enemyImg = new Image();
     enemyImg.addEventListener('load', loadHandler, false);
@@ -76,11 +84,11 @@
     background.image = backgroundImage;
     background.x = 0;
     background.y = 0;
-    background.sourceY = 64;
+    background.sourceY = 0;
     background.sourceWidth = 960;
-    background.sourceHeight = 640;
+    background.sourceHeight = 3200;
     background.width = 960;
-    background.height = 640;
+    background.height = 3200;
     sprites.push(background);
 
     var hero = Object.create(spriteObject);
@@ -103,7 +111,7 @@
     sprites.push(missileSymbol);
 
     var scoreDisplay = Object.create(messageObject);
-    scoreDisplay.font = 'normal bold 40px Howlinmad';
+    scoreDisplay.font = 'normal bold 37px Howlinmad';
     scoreDisplay.fillStyle = '#2ecc71';
     scoreDisplay.x = Math.floor(canvas.width * 0.07);
     scoreDisplay.y = Math.floor(canvas.height * 0.02);
@@ -112,18 +120,18 @@
     messages.push(scoreDisplay);
 
     var livesDisplay = Object.create(messageObject);
-    livesDisplay.font = 'normal bold 40px Howlinmad';
+    livesDisplay.font = 'normal bold 37px Howlinmad';
     livesDisplay.fillStyle = '#d30019';
-    livesDisplay.x = Math.floor(canvas.width * 0.3);
+    livesDisplay.x = Math.floor(canvas.width * 0.28);
     livesDisplay.y = Math.floor(canvas.height * 0.02);
     livesDisplay.text = returnLivesText();
     livesDisplay.visible = true;
     messages.push(livesDisplay);
 
     var boringMetterMessage = Object.create(messageObject);
-    boringMetterMessage.font = 'normal bold 40px Howlinmad';
+    boringMetterMessage.font = 'normal bold 37px Howlinmad';
     boringMetterMessage.fillStyle = '#14b2ff';
-    boringMetterMessage.x = Math.floor(canvas.width * 0.5);
+    boringMetterMessage.x = Math.floor(canvas.width * 0.47);
     boringMetterMessage.y = Math.floor(canvas.height * 0.02);
     boringMetterMessage.text = returnBoringText();
     boringMetterMessage.visible = true;
@@ -131,11 +139,11 @@
 
     var levelDisplay = Object.create(messageObject);
     levelDisplay.visible = true;
-    levelDisplay.font = 'normal bold 20px Howlinmad';
-    levelDisplay.fillStyle = '#993030';
+    levelDisplay.font = 'normal bold 37px Howlinmad';
+    levelDisplay.fillStyle = '#ffffff';
     levelDisplay.text = returnLevelText();
-    levelDisplay.x = Math.floor(canvas.width * 0.92);
-    levelDisplay.y = Math.floor(canvas.height * 0.01);
+    levelDisplay.x = Math.floor(canvas.width * 0.89);
+    levelDisplay.y = Math.floor(canvas.height * 0.02);
     messages.push(levelDisplay);
 
     var endGameMessage = Object.create(messageObject);
@@ -150,11 +158,11 @@
     messages.push(endGameMessage);
 
     var levelCompleteDisplay = Object.create(messageObject);
-    levelCompleteDisplay.font = 'normal bold 40px Helvetica';
-    levelCompleteDisplay.fillStyle = '#c7ccc9';
+    levelCompleteDisplay.font = 'normal bold 50px Friday';
+    levelCompleteDisplay.fillStyle = '#c60019';
     levelCompleteDisplay.text = 'Congratulations! Level completed.';
-    levelCompleteDisplay.x = Math.floor(canvas.width * 0.16);
-    levelCompleteDisplay.y = Math.floor(canvas.height * 0.5);
+    levelCompleteDisplay.x = Math.floor(canvas.width * 0.1);
+    levelCompleteDisplay.y = Math.floor(canvas.height * 0.465);
     levelCompleteDisplay.visible = false;
     messages.push(levelCompleteDisplay);
 
@@ -391,6 +399,38 @@
         getCanvas.classList.remove('shake-effect');
     }
 
+    function hitEffect2Start() {
+        getCanvas.classList.add('hit-effect2');
+    }
+
+    function hitEffect2Stop() {
+        getCanvas.classList.remove('hit-effect2');
+    }
+
+    function hitEffect3Start() {
+        getCanvas.classList.add('hit-effect3');
+    }
+
+    function hitEffect3Stop() {
+        getCanvas.classList.remove('hit-effect3');
+    }
+
+    function hitEffect4Start() {
+        getCanvas.classList.add('hit-effect4');
+    }
+
+    function hitEffect4Stop() {
+        getCanvas.classList.remove('hit-effect4');
+    }
+
+    function hitEffect5Start() {
+        getCanvas.classList.add('hit-effect5');
+    }
+
+    function hitEffect5Stop() {
+        getCanvas.classList.remove('hit-effect5');
+    }
+
     function checkIfHit() {
         for (var i = 0; i < enemies.length; i++) {
             var enemy = enemies[i];
@@ -422,6 +462,10 @@
         }
 
         function loadNextLevel() {
+            numberOfCurrentLevel++;
+            if (numberOfCurrentLevel < numberOfLevels) {
+                background.y -= 640;
+            };
             levelCompleteDisplay.visible = false;
             levelChangeTimer = 0;
             levelCounter++;
@@ -475,16 +519,45 @@
             if (hitTestRectangle(enemy, hero)) {
                 destroyEnemy(enemy);
                 hero.lives--;
+                if (hero.lives < 3) {
+                    hero.image = heroImageHurted;
+                };
                 removeObject(enemy, enemies);
                 removeObject(enemy, sprites);
                 livesDisplay.text = LIVE_MESS + hero.lives;
                 if (hero.lives === 0) {
                     gameState = OVER;
                 }
-                shakeScreenStart();
-                setTimeout(function () {
-                    shakeScreenStop()
-                }, 500);
+                if (hero.lives < 5 || numberOfCurrentLevel == 0) {
+                    shakeScreenStart();
+                    setTimeout(function () {
+                        shakeScreenStop()
+                    }, 500);
+                };
+                if (hero.lives < 4 || numberOfCurrentLevel == 1) {
+                    hitEffect2Start();
+                    setTimeout(function () {
+                        hitEffect2Stop()
+                    }, 500);
+                };
+                if (hero.lives < 3 || numberOfCurrentLevel == 2) {
+                    hitEffect3Start();
+                    setTimeout(function () {
+                        hitEffect3Stop()
+                    }, 750);
+                };
+                if (hero.lives < 2 || numberOfCurrentLevel == 3) {
+                    hitEffect4Start();
+                    setTimeout(function () {
+                        hitEffect4Stop()
+                    }, 500);
+                };
+                if (hero.lives < 2 || numberOfCurrentLevel == 4) {
+                    hitEffect5Start();
+                    setTimeout(function () {
+                        hitEffect5Stop()
+                    }, 500);
+                };
             }
         }
     }
@@ -590,8 +663,10 @@
         infoCloud.state = state;
         infoCloud.update();
         infoCloud.attachetTo = attachetTo;
-        infoCloud.numberOffFrames = 4;
-        infoCloud.numberOffColumns = 6;
+        // infoCloud.numberOffFrames = 4;
+        infoCloud.numberOffFrames = 1;
+        // infoCloud.numberOffColumns = 6;
+        infoCloud.numberOffColumns = 1;
         infoCloud.image = infoCloudsImage;
         infoCloud.sourceWidth = 90;
         infoCloud.sourceHeight = 81;
