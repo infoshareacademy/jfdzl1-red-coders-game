@@ -16,6 +16,7 @@
     var PLAYING = 1;
     var OVER = 2;
     var LEVEL_COMPLETE = 3;
+    var INSTRUCTION_DISPLAY = 4;
     var SCORE_MESS = 'Score: ';
     var START_LIVES = 5;
     var START_BORING = 6;
@@ -49,6 +50,7 @@
     var isTouched = false;
     var startTouch = false;
     var changeWeapon = false;
+    var displayInstruction = false;
 
     var backgroundImage = new Image();
     backgroundImage.addEventListener('load', loadHandler, false);
@@ -79,6 +81,20 @@
     missileImage.addEventListener('load', loadHandler, false);
     missileImage.src = './images/sprites_missiles.png';
     assetsToLoad.push(missileImage);
+
+    //fonts
+
+    var fontHVD_Peace  = new Font();
+    fontHVD_Peace.src = 'HVD_Peace font';
+
+    var fontSickness  = new Font();
+    fontSickness.src = 'Sickness';
+
+    var fontFriday  = new Font();
+    fontFriday.src = 'Friday';
+
+    var fontHowlinmad  = new Font();
+    fontHowlinmad.src = 'Howllinmad';
 
     var background = Object.create(spriteObject);
     background.image = backgroundImage;
@@ -157,14 +173,38 @@
     endGameMessage.visible = false;
     messages.push(endGameMessage);
 
+    var endGameRestartMessage = Object.create(messageObject);
+    endGameRestartMessage.font = 'normal bold 40px Friday';
+    endGameRestartMessage.fillStyle = '#3457e1';
+    endGameRestartMessage.x = Math.floor(canvas.width / 2);
+    endGameRestartMessage.y = Math.floor(canvas.height / 2 + 150);
+    endGameRestartMessage.textAlign = 'center';
+    endGameRestartMessage.textBaseline = 'middle';
+    endGameRestartMessage.text = 'Press space to restart';
+    endGameRestartMessage.visible = false;
+    messages.push(endGameRestartMessage);
+
     var levelCompleteDisplay = Object.create(messageObject);
     levelCompleteDisplay.font = 'normal bold 50px Friday';
     levelCompleteDisplay.fillStyle = '#c60019';
     levelCompleteDisplay.text = 'Congratulations! Level completed.';
-    levelCompleteDisplay.x = Math.floor(canvas.width * 0.1);
-    levelCompleteDisplay.y = Math.floor(canvas.height * 0.465);
+    levelCompleteDisplay.textAlign = 'center';
+    levelCompleteDisplay.textBaseline = 'middle';
+    levelCompleteDisplay.x = Math.floor(canvas.width / 2);
+    levelCompleteDisplay.y = Math.floor(canvas.height /2);
     levelCompleteDisplay.visible = false;
     messages.push(levelCompleteDisplay);
+
+    var instructionMessage = Object.create(messageObject);
+    instructionMessage.font = 'normal bold 30px Howlinmad';
+    instructionMessage.fillStyle = '#e9262e';
+    instructionMessage.text = returnInstructionText();
+    instructionMessage.textAlign = 'center';
+    instructionMessage.textBaseline = 'middle';
+    instructionMessage.x = Math.floor(canvas.width / 2);
+    instructionMessage.y = Math.floor(canvas.height / 2 - 50);
+    instructionMessage.visible = false;
+    messages.push(instructionMessage);
 
     var getCanvas = document.querySelector('.canvas');
 
@@ -207,6 +247,10 @@
                 changeWeapon = true;
                 event.preventDefault();
                 break;
+            case 'i':
+                displayInstruction = true;
+                event.preventDefault();
+                break;
         }
     }, false);
 
@@ -226,6 +270,9 @@
             case LEVEL_COMPLETE:
                 levelComplete();
                 break;
+            case INSTRUCTION_DISPLAY:
+                instructionDisplay();
+                break;
             case OVER:
                 endGame();
                 break;
@@ -236,7 +283,7 @@
     function loadHandler() {
         assetsLoaded++;
         if (assetsLoaded === assetsToLoad.length) {
-            gameState = PLAYING;
+            gameState = INSTRUCTION_DISPLAY;
         }
     }
 
@@ -305,6 +352,10 @@
             missileSymbol.update();
             missileSymbol.updateSourceImg();
             changeWeapon = false;
+        }
+
+        if (displayInstruction) {
+            gameState = INSTRUCTION_DISPLAY;
         }
 
         if (isTouched) {
@@ -389,6 +440,19 @@
 
     function endGame() {
         endGameMessage.visible = true;
+        endGameRestartMessage.visible = true;
+        if (shoot) {
+           restartGame()
+        }
+    }
+
+    function instructionDisplay() {
+        instructionMessage.visible = true;
+        displayInstruction = false;
+        if (shoot) {
+            instructionMessage.visible = false;
+            gameState = PLAYING;
+        }
     }
 
     function shakeScreenStart() {
@@ -482,12 +546,7 @@
             sprites.push(background);
             sprites.push(hero);
             sprites.push(missileSymbol);
-            messages.push(scoreDisplay);
-            messages.push(livesDisplay);
-            messages.push(boringMetterMessage);
-            messages.push(endGameMessage);
-            messages.push(levelCompleteDisplay);
-            messages.push(levelDisplay);
+            loadAllMessages();
             if (levelCounter <= levelOfDifficulty.length -1 ) {
                 numberKillsToWinLevel = levelCounter * 10;
                 velocity = levelOfDifficulty[levelCounter];
@@ -583,6 +642,14 @@
                 drawSprite(sprite);
             }
         }
+
+        if (infoClouds.length !== 0) {
+            for (var i = 0; i < infoClouds.length; i++) {
+                var infoCloud = infoClouds[i];
+                drawSprite(infoCloud);
+            }
+        }
+
         if (messages.length !== 0) {
             for (var i = 0; i < messages.length; i++) {
                 var message = messages[i];
@@ -591,16 +658,34 @@
                     drawingSurface.fillStyle = message.fillStyle;
                     drawingSurface.textBaseline = message.textBaseline;
                     drawingSurface.textAlign = message.textAlign;
-                    drawingSurface.fillText(message.text, message.x, message.y);
+                    //drawingSurface.fillText(message.text, message.x, message.y);
+                    wrapText(drawingSurface, message.text, message.x, message.y, canvas.width, 40  );
                 }
             }
         }
+    }
 
-        if (infoClouds.length !== 0) {
-            for (var i = 0; i < infoClouds.length; i++) {
-                var infoCloud = infoClouds[i];
-                drawSprite(infoCloud);
+    function wrapText(context, text, x, y, maxWidth, lineHeight) {
+        var cars = text.split("\n");
+        for (var ii = 0; ii < cars.length; ii++) {
+            var line = "";
+            var words = cars[ii].split(" ");
+            for (var n = 0; n < words.length; n++) {
+                var testLine = line + words[n] + " ";
+                var metrics = context.measureText(testLine);
+                var testWidth = metrics.width;
+
+                if (testWidth > maxWidth) {
+                    context.fillText(line, x, y);
+                    line = words[n] + " ";
+                    y += lineHeight;
+                }
+                else {
+                    line = testLine;
+                }
             }
+            context.fillText(line, x, y);
+            y += lineHeight;
         }
     }
 
@@ -693,6 +778,13 @@
         return 'Lvl: ' + levelCounter;
     }
 
+    function returnInstructionText() {
+        return 'Your main objective is to kill the boredom of Yanush.\n Don\'t let him infect you!\n\n' +
+            'Move: arrow RIGHT & LEFT\n' +
+            'Shoot: SPACE\n\n' +
+            'Shoot to START';
+    }
+
 
     function escapeEnemy(state, enemy) {
         enemy.state = enemy.ESCAPE;
@@ -716,6 +808,53 @@
             removeObject(enemy, enemies);
             removeObject(enemy, sprites);
         }
+    }
+
+    function restartGame () {
+        numberOfCurrentLevel = 0;
+        instructionMessage.visible = false;
+
+        endGameMessage.visible = false;
+        endGameRestartMessage.visible = false;
+
+        numberOfCurrentLevel = 0;
+        background.y = 0;
+        levelCompleteDisplay.visible = false;
+        levelChangeTimer = 0;
+        levelCounter = 1;
+        levelDisplay.text = returnLevelText();
+        enemyFrequency = 120;
+        velocity = 1;
+        sprites = [];
+        assetsToLoad = [];
+        missiles = [];
+        enemies = [];
+        messages = [];
+        enemyTimer = 0;
+        scores = 0;
+        infoClouds = [];
+        boring = 0;
+        hero.lives = START_LIVES;
+        sprites.push(background);
+        sprites.push(hero);
+        sprites.push(missileSymbol);
+        loadAllMessages();
+
+        gameState = PLAYING;
+
+    }
+    function loadAllMessages() {
+        livesDisplay.text = returnLivesText();
+        scoreDisplay.text = returnScoreText();
+        boringMetterMessage.text = returnBoringText();
+        messages.push(scoreDisplay);
+        messages.push(livesDisplay);
+        messages.push(boringMetterMessage);
+        messages.push(endGameMessage);
+        messages.push(endGameRestartMessage);
+        messages.push(instructionMessage);
+        messages.push(levelCompleteDisplay);
+        messages.push(levelDisplay);
     }
 
 //Start here
