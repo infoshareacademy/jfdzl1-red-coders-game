@@ -27,6 +27,7 @@
     var scaleCalibration = 1.2;
     var weaponMissilesType = missileObject.BOOK;
     var numberKillsToWinLevel = 10;
+    var infoBackground = true;
 
     //new variables for game difficulty raise
     var levelOfDifficulty = [];
@@ -308,7 +309,6 @@
     }
 
     function touchEndFireHandler(event) {
-
         touchX = event.targetTouches.pageX - canvas.offsetLeft;
         touchY = event.targetTouches.pageY - canvas.offsetTop;
         var displayedCanvas = $('.canvas');
@@ -816,7 +816,7 @@
 
         endGameMessage.visible = false;
         endGameRestartMessage.visible = false;
-
+        numberKillsToWinLevel = 10;
         numberOfCurrentLevel = 0;
         background.y = 0;
         levelCompleteDisplay.visible = false;
@@ -839,7 +839,7 @@
         sprites.push(hero);
         sprites.push(missileSymbol);
         loadAllMessages();
-
+        hero.image = heroImage;
         gameState = PLAYING;
 
     }
