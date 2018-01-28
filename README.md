@@ -15,6 +15,8 @@ See also our project [page](http://red-coders.jfdzl1.is-academy.pl) and [repo](h
 Used music: `Boss 3: This is the time to glisten` by Komiku.
 Music is licensed under a CC0 1.0 Universal License.
 
+JFDZL1 projects: https://github.com/infoshareacademy/jfdzl1-projects
+
 ## Other projects
 * Project website: [demo](http://red-coders.jfdzl1.is-academy.pl), [repo](https://github.com/infoshareacademy/jfdzl1-red-coders-www)
 * Application: [demo](http://app.red-coders.jfdzl1.is-academy.pl), [repo](https://github.com/infoshareacademy/jfdzl1-red-coders-app)
